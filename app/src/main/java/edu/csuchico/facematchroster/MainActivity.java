@@ -1,7 +1,7 @@
 package edu.csuchico.facematchroster;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.Button;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -51,7 +51,10 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
+
+        private Button studentButton;
+        private Button teacherButton;
 
         public PlaceholderFragment() {
         }
@@ -60,7 +63,33 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            studentButton = (Button) rootView.findViewById(R.id.studentButton);
+            teacherButton = (Button) rootView.findViewById(R.id.teacherButton);
+
+            studentButton.setOnClickListener(this);
+
+
             return rootView;
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            Intent intent= null;
+
+            switch (view.getId()) {
+                case R.id.studentButton:
+
+                    intent = new Intent(getActivity(), StudentLogin.class);
+
+                    break;
+
+                case R.id.teacherButton:
+                    break;
+            }
+
+            startActivity(intent);
         }
     }
 }
