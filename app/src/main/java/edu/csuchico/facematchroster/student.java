@@ -10,23 +10,23 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 
 public class Student {
     private String userid;
-    private String timestamp;
+    private long timestamp;
     private String name;
     private String email;
     private String mnemonic;
     private String schoolName;
     private String s3PicLoc;
 
-    @DynamoDBIndexRangeKey(attributeName = "unx_timestamp")
-    public String getTimestamp() {
+    @DynamoDBIndexHashKey(attributeName = "unx_timestamp")
+    public long getTimeStamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    @DynamoDBIndexHashKey(attributeName = "school_userid")
+    @DynamoDBHashKey(attributeName = "school_userid")
     public String getUserid() {
         return userid;
     }
@@ -35,12 +35,12 @@ public class Student {
         this.userid = userid;
     }
 
-    @DynamoDBAttribute(attributeName = "name")
+    @DynamoDBIndexRangeKey(attributeName = "name")
     public String getName() {
         return name;
     }
 
-    public void set(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
