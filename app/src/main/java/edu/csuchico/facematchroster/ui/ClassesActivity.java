@@ -1,13 +1,17 @@
 package edu.csuchico.facematchroster.ui;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 
-public class ClassesActivity extends ActionBarActivity {
+public class ClassesActivity extends BaseActivity {
+    public ClassesActivity() {
+        // to prevent to call this activity again
+        // see BaseActivity.DrawerItemClickListener
+        mLastSelectedPosition = NAVDRAWER_ITEM_CLASSES;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
