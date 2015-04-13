@@ -189,8 +189,40 @@ public class BaseActivity extends ActionBarActivity {
 
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        public void onItemClick(AdapterView<?> adapterView, View view, int item, long l) {
+            mDrawerLayout.closeDrawer(Gravity.START);
 
+            if (item != mLastSelectedPosition) { // if so start a new activity
+                mLastSelectedPosition = item;
+
+                Intent intent;
+                switch (item) {
+                    case NAVDRAWER_ITEM_CLASSES:
+                        intent = new Intent(getBaseContext(), ClassesActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case NAVDRAWER_ITEM_ADD_CLASS:
+                        intent = new Intent(getBaseContext(), AddClassActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case NAVDRAWER_ITEM_SETTINGS:
+                        intent = new Intent(getBaseContext(), SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case NAVDRAWER_ITEM_HELP:
+                        intent = new Intent(getBaseContext(), HelpActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case NAVDRAWER_ITEM_FEEDBACK:
+                        intent = new Intent(getBaseContext(), FeedbackActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                }
+            }
         }
     }
 }
