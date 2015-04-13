@@ -5,6 +5,8 @@
 .DS_Store
 /build
 
+/app/libs
 # Android Studio
 .iml
 /app/app.iml
+
