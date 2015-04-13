@@ -210,6 +210,7 @@ public class BaseActivity extends ActionBarActivity {
                     case NAVDRAWER_ITEM_SETTINGS:
                         intent = new Intent(getBaseContext(), SettingsActivity.class);
                         startActivity(intent);
+                        mLastSelectedPosition = NAVDRAWER_ITEM_CLASSES; // Settings back to classes
                         break;
                     case NAVDRAWER_ITEM_HELP:
                         intent = new Intent(getBaseContext(), HelpActivity.class);
