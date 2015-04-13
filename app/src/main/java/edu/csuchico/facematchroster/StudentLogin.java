@@ -12,6 +12,8 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
+import edu.csuchico.facematchroster.model.Student;
+
 
 public class StudentLogin extends Activity implements View.OnClickListener {
 

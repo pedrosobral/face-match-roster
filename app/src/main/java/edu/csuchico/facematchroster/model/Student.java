@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster;
+package edu.csuchico.facematchroster.model;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
