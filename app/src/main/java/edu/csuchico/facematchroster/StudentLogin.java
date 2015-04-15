@@ -29,6 +29,8 @@ public class StudentLogin extends Activity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //TODO: add option to choose picture or take picture
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_loggin);
 
@@ -49,10 +51,7 @@ public class StudentLogin extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-    //TODO: upload pic to s3 and get s3 loc of pic
-    //TODO: use mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
-    // to make table name dynamic(get from input)
-    //TODO: error checking for inputs
+    //TODO: upload pic to s3 and get s3 loc of pic. new thread or async?
 
         //new thread to upload to DynDB
         //should we use async instead of new thread?
@@ -60,6 +59,11 @@ public class StudentLogin extends Activity implements View.OnClickListener {
             @Override
             public void run() {
                 try {
+                    //TODO: use mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
+                    // to make table name dynamic(get from input/email/consistent as table name stays same in db)
+                    //TODO: error checking for inputs
+                    //TODO: post success or failure of upload
+
                     //Initialize the Amazon Cognito credentials provider
                     CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                             getApplicationContext(), // Context
@@ -81,6 +85,8 @@ public class StudentLogin extends Activity implements View.OnClickListener {
                     //student.setS3PicLoc();
                     Log.d("StudentLogin","Student Class populated");
 
+                    //TODO: query table to see if user exists already
+                    //TODO: if user exists ask if he wants to update
                     mapper.save(student);
                     //this should be used
                     //mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
