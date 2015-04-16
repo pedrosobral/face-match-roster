@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\libs\internal_impl-22.0.0.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="b5b92f469d515a13d778900f6d50c03d12f35504">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\internal_impl-22.0.0-981e2864f98256db9da8dc0e59f0aa617d483863.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.0.0\classes.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\classes-fd7d375c145bc2e7ab6e9273ae35ee9101c8a08b.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\libs\aws-android-sdk-ddb-2.1.10.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="2446adbd0a731deae0c3a8a72c2ee8f64616fd93">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\aws-android-sdk-ddb-2.1.10-1c3029bddd079f4845ff1312171c411e1e1f9432.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\libs\aws-android-sdk-ddb-mapper-2.1.10.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="ce6bb170ec4daf179565393e333e39d056c4cd5d">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\aws-android-sdk-ddb-mapper-2.1.10-519e8ea4b57cd4d6ef0f44376ef8c247abb1506b.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\libs\aws-android-sdk-core-2.1.10.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="8e745828ca64264810c80934270d72d574fd3154">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\aws-android-sdk-core-2.1.10-1ed18b2beea9992c598b31186b9119e17e3fbbef.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\22.0.0\support-annotations-22.0.0.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\support-annotations-22.0.0-cfa31576fb1de620fe4b4542e68d83cd477c183c.jar" />
+    </item>
+    <item
+        jar="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.0.0\classes.jar"
+        jumboMode="false"
+        revision="22.0.0"
+        sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
+        <dex dex="C:\Users\Rushi\Documents\facematch-roster\app\build\intermediates\pre-dexed\debug\classes-b2c8ac19323805001c55d4b4121c7a0fc11a2790.jar" />
+    </item>
+
+</items>
