@@ -13,7 +13,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 
-public class StudentLogin extends Activity implements View.OnClickListener {
+public class StudentLogin extends Activity {
 
     private EditText mName;
     private EditText mMnemonic;
@@ -21,6 +21,57 @@ public class StudentLogin extends Activity implements View.OnClickListener {
     private EditText mEmail;
     private EditText mId;
     private Button mSubmitButton;
+
+    private View.OnClickListener mSubmitButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //TODO: upload pic to s3 and get s3 loc of pic. new thread or async?
+
+            //new thread to upload to DynDB
+            //should we use async instead of new thread?
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //TODO: use mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
+                        // to make table name dynamic(get from input/email/consistent as table name stays same in db)
+                        //TODO: error checking for inputs
+                        //TODO: post success or failure of upload
+
+                        //Initialize the Amazon Cognito credentials provider
+                        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                                getApplicationContext(), // Context
+                                "us-east-1:bd3ecd92-f22f-4dc0-a0b5-bcc79294044b", // Identity Pool ID
+                                Regions.US_EAST_1 // Region
+                        );
+                        Log.d("LogTag", "my ID is " + credentialsProvider.getIdentityId());
+
+                        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
+                        DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+
+                        Student student = new Student();
+                        student.setUserid(mId.getText().toString());
+                        student.setTimestamp(System.currentTimeMillis());
+                        student.setName(mName.getText().toString());
+                        student.setEmail(mEmail.getText().toString());
+                        student.setMnemonic(mMnemonic.getText().toString());
+                        student.setSchoolName(mSchool.getText().toString());
+                        //student.setS3PicLoc();
+                        Log.d("StudentLogin", "Student Class populated");
+
+                        //TODO: query table to see if user exists already
+                        //TODO: if user exists ask if he wants to update
+                        mapper.save(student);
+                        //this should be used
+                        //mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,61 +87,11 @@ public class StudentLogin extends Activity implements View.OnClickListener {
         mId = (EditText) findViewById(R.id.idForm);
         mSubmitButton = (Button) findViewById(R.id.submitButton);
 
-        mSubmitButton.setOnClickListener(this);
+        mSubmitButton.setOnClickListener(mSubmitButtonListener);
 
         //hack for debugging only, do not use in prod
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         //StrictMode.setThreadPolicy(policy);
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        //TODO: upload pic to s3 and get s3 loc of pic. new thread or async?
-
-        //new thread to upload to DynDB
-        //should we use async instead of new thread?
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    //TODO: use mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
-                    // to make table name dynamic(get from input/email/consistent as table name stays same in db)
-                    //TODO: error checking for inputs
-                    //TODO: post success or failure of upload
-
-                    //Initialize the Amazon Cognito credentials provider
-                    CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                            getApplicationContext(), // Context
-                            "us-east-1:bd3ecd92-f22f-4dc0-a0b5-bcc79294044b", // Identity Pool ID
-                            Regions.US_EAST_1 // Region
-                    );
-                    Log.d("LogTag", "my ID is " + credentialsProvider.getIdentityId());
-
-                    AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-                    DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
-
-                    Student student = new Student();
-                    student.setUserid(mId.getText().toString());
-                    student.setTimestamp(System.currentTimeMillis());
-                    student.setName(mName.getText().toString());
-                    student.setEmail(mEmail.getText().toString());
-                    student.setMnemonic(mMnemonic.getText().toString());
-                    student.setSchoolName(mSchool.getText().toString());
-                    //student.setS3PicLoc();
-                    Log.d("StudentLogin", "Student Class populated");
-
-                    //TODO: query table to see if user exists already
-                    //TODO: if user exists ask if he wants to update
-                    mapper.save(student);
-                    //this should be used
-                    //mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }).start();
-
 
     }
 }
