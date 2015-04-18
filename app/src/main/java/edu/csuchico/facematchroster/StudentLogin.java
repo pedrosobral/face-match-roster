@@ -2,20 +2,15 @@ package edu.csuchico.facematchroster;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.*;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 
 public class StudentLogin extends Activity implements View.OnClickListener {
@@ -51,11 +46,11 @@ public class StudentLogin extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-    //TODO: upload pic to s3 and get s3 loc of pic. new thread or async?
+        //TODO: upload pic to s3 and get s3 loc of pic. new thread or async?
 
         //new thread to upload to DynDB
         //should we use async instead of new thread?
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -83,7 +78,7 @@ public class StudentLogin extends Activity implements View.OnClickListener {
                     student.setMnemonic(mMnemonic.getText().toString());
                     student.setSchoolName(mSchool.getText().toString());
                     //student.setS3PicLoc();
-                    Log.d("StudentLogin","Student Class populated");
+                    Log.d("StudentLogin", "Student Class populated");
 
                     //TODO: query table to see if user exists already
                     //TODO: if user exists ask if he wants to update
