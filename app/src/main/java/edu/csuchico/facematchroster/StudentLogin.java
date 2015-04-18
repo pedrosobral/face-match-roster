@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -21,6 +22,14 @@ public class StudentLogin extends Activity {
     private EditText mEmail;
     private EditText mId;
     private Button mSubmitButton;
+    private ImageView mImageView;
+
+    private View.OnClickListener mImageViewListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
 
     private View.OnClickListener mSubmitButtonListener = new View.OnClickListener() {
         @Override
@@ -86,8 +95,10 @@ public class StudentLogin extends Activity {
         mEmail = (EditText) findViewById(R.id.emaiForm);
         mId = (EditText) findViewById(R.id.idForm);
         mSubmitButton = (Button) findViewById(R.id.submitButton);
+        mImageView = (ImageView) findViewById(R.id.imageView);
 
         mSubmitButton.setOnClickListener(mSubmitButtonListener);
+        mImageView.setOnClickListener(mImageViewListener);
 
         //hack for debugging only, do not use in prod
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
