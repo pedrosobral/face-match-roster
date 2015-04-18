@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
@@ -131,6 +132,18 @@ public class StudentLogin extends Activity {
 
     private class saveStudentToCognitoTask extends AsyncTask<Void, Void, Void> {
 
+        final MaterialDialog materialDialog =
+                new MaterialDialog.Builder(StudentLogin.this)
+                        .title("Signing in...")
+                        .content("Your phone is contacting our servers")
+                        .progress(true, 0).build();
+        private boolean mDownloadError = false;
+
+        @Override
+        protected void onPreExecute() {
+            materialDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -167,8 +180,29 @@ public class StudentLogin extends Activity {
                 //mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
             } catch (Exception ex) {
                 ex.printStackTrace();
+                mDownloadError = true;
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            if (mDownloadError) {
+                new MaterialDialog.Builder(StudentLogin.this)
+                        .title("Signing in...")
+                        .content("Can't connect")
+                        .positiveText("OK")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                materialDialog.dismiss();
+                            }
+                        })
+                        .show();
+            } else {
+                materialDialog.dismiss();
+            }
         }
     }
 }
