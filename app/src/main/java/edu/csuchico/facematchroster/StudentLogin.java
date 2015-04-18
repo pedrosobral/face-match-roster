@@ -1,7 +1,15 @@
 package edu.csuchico.facematchroster;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,9 +21,14 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class StudentLogin extends Activity {
 
+    private static final int REQUEST_IMAGE_GALLERY = 1;
     private EditText mName;
     private EditText mMnemonic;
     private EditText mSchool;
@@ -27,7 +40,7 @@ public class StudentLogin extends Activity {
     private View.OnClickListener mImageViewListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            dispatchGetPictureIntent();
         }
     };
 
@@ -84,7 +97,6 @@ public class StudentLogin extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO: add option to choose picture or take picture
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_loggin);
@@ -104,5 +116,59 @@ public class StudentLogin extends Activity {
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         //StrictMode.setThreadPolicy(policy);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            if (uri != null) { // from gallery
+                try {
+                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    mImageView.setImageBitmap(imageBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else { // from camera
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                    mImageView.setImageBitmap(imageBitmap);
+                }
+            }
+        }
+    }
+
+    /**
+     * source: http://stackoverflow.com/questions/4455558/allow-user-to-select-camera-or-gallery-for-image/
+     */
+    private void dispatchGetPictureIntent() {
+        // Camera intent
+        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        final PackageManager packageManager = getPackageManager();
+        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam) {
+            final String packageName = res.activityInfo.packageName;
+            final Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(packageName);
+            intent.putExtra(MediaStore.MEDIA_IGNORE_FILENAME, ".nomedia");
+
+            cameraIntents.add(intent);
+        }
+
+        // Filesystem intent
+        final Intent galleryIntent = new Intent();
+        galleryIntent.setType("image/*");
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+        // Chooser of filesystem options
+        final Intent chooserIntent = Intent.createChooser(galleryIntent, "Complete action using");
+
+        // Add the camera options
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_GALLERY);
     }
 }
