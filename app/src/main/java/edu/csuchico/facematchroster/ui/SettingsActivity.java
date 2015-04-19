@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
 
 public class SettingsActivity extends BaseActivity {
@@ -21,6 +22,7 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
+                ActivityTransitionAnimation.slide(SettingsActivity.this, ActivityTransitionAnimation.RIGHT);
             }
         });
 

@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
 public class BaseActivity extends ActionBarActivity {
 
@@ -210,6 +211,7 @@ public class BaseActivity extends ActionBarActivity {
                     case NAVDRAWER_ITEM_SETTINGS:
                         intent = new Intent(getBaseContext(), SettingsActivity.class);
                         startActivity(intent);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
                         mLastSelectedPosition = NAVDRAWER_ITEM_CLASSES; // Settings back to classes
                         break;
                     case NAVDRAWER_ITEM_HELP:
