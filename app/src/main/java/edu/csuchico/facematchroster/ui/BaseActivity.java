@@ -33,7 +33,7 @@ public class BaseActivity extends ActionBarActivity {
     protected static final int NAVDRAWER_ITEM_SETTINGS = 2;
     protected static final int NAVDRAWER_ITEM_HELP = 4; // 3 separator
     protected static final int NAVDRAWER_ITEM_FEEDBACK = 5;
-//    protected static final int NAVDRAWER_ITEM_INVALID = -1;
+    //    protected static final int NAVDRAWER_ITEM_INVALID = -1;
 //    protected static final int NAVDRAWER_ITEM_SEPARATOR = -2;
 //    protected static final int NAVDRAWER_ITEM_SEPARATOR_SPECIAL = -3;
     // icons for navDrawer items (indices must correspond to above array)
