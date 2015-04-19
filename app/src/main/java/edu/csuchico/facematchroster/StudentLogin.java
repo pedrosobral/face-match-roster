@@ -23,10 +23,11 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
-import edu.csuchico.facematchroster.model.Student;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.csuchico.facematchroster.model.Student;
 
 public class StudentLogin extends Activity {
 
@@ -136,6 +137,7 @@ public class StudentLogin extends Activity {
         final MaterialDialog materialDialog =
                 new MaterialDialog.Builder(StudentLogin.this)
                         .title("Signing in...")
+                        .cancelable(false)
                         .content("Your phone is contacting our servers")
                         .progress(true, 0).build();
         private boolean mDownloadError = false;
@@ -189,6 +191,8 @@ public class StudentLogin extends Activity {
         @Override
         protected void onPostExecute(Void aVoid) {
 
+            materialDialog.dismiss();
+
             if (mDownloadError) {
                 new MaterialDialog.Builder(StudentLogin.this)
                         .title("Signing in...")
@@ -197,12 +201,24 @@ public class StudentLogin extends Activity {
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
                             public void onPositive(MaterialDialog dialog) {
-                                materialDialog.dismiss();
+                                dialog.dismiss();
                             }
                         })
                         .show();
             } else {
-                materialDialog.dismiss();
+                new MaterialDialog.Builder(StudentLogin.this)
+                        .title("Hello " + mName.getText().toString())
+                        .content("Welcome to FaceMatch Roster")
+                        .positiveText("Next")
+                        .cancelable(false)
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .show();
             }
         }
     }
