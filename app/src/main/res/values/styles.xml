@@ -57,7 +57,7 @@
 
     <style name="ActionBarPopupThemeOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="ActionBarThemeOverlay" parent="">
+    <style name="ActionBarThemeOverlay" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:textColorPrimary">#fff</item>
         <item name="colorControlHighlight">#3fff</item>
     </style>
