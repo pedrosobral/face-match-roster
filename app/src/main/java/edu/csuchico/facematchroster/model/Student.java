@@ -1,7 +1,6 @@
 package edu.csuchico.facematchroster.model;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
@@ -14,7 +13,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 public class Student {
     private String userid;
-    private String timestamp;
+    private long timestamp;
     private String name;
     private String email;
     private String mnemonic;
@@ -22,11 +21,11 @@ public class Student {
     private String s3PicLoc;
 
     @DynamoDBIndexRangeKey(attributeName = "unx_timestamp")
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -44,7 +43,7 @@ public class Student {
         return name;
     }
 
-    public void set(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
