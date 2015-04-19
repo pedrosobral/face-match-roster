@@ -1,4 +1,3 @@
-
 package edu.csuchico.facematchroster.anim;
 
 import android.view.animation.AccelerateInterpolator;

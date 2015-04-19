@@ -2,7 +2,6 @@
     android:id="@+id/navdrawer_item"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="?android:selectableItemBackground"
     android:gravity="start|center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/keyline_1"

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Student;
 
 public class StudentLogin extends Activity {
@@ -132,6 +133,13 @@ public class StudentLogin extends Activity {
         startActivityForResult(chooserIntent, REQUEST_IMAGE_GALLERY);
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        ActivityTransitionAnimation.
+                slide(StudentLogin.this, ActivityTransitionAnimation.RIGHT);
+    }
+
     private class saveStudentToCognitoTask extends AsyncTask<Void, Void, Void> {
 
         final MaterialDialog materialDialog =
@@ -216,6 +224,7 @@ public class StudentLogin extends Activity {
                             public void onPositive(MaterialDialog dialog) {
                                 dialog.dismiss();
                                 finish();
+
                             }
                         })
                         .show();

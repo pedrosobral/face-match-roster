@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.StudentLogin;
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
 public class ClassesActivity extends BaseActivity {
     public ClassesActivity() {
@@ -38,6 +39,7 @@ public class ClassesActivity extends BaseActivity {
             case R.id.debug:
                 Intent intent = new Intent(ClassesActivity.this, StudentLogin.class);
                 startActivity(intent);
+                ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.LEFT);
                 break;
         }
 
