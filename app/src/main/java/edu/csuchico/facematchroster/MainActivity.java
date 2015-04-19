@@ -1,9 +1,9 @@
 package edu.csuchico.facematchroster;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import edu.csuchico.facematchroster.ui.BaseActivity;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.content_frame, new PlaceholderFragment())
                     .commit();
         }
     }
@@ -76,7 +78,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onClick(View view) {
 
-            Intent intent= null;
+            Intent intent = null;
 
             switch (view.getId()) {
                 case R.id.studentButton:

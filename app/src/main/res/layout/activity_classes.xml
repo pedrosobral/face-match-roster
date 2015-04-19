@@ -1,6 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tools:RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="edu.csuchico.facematchroster.ClassesActivity">
 
     <include layout="@layout/toolbar_actionbar"></include>
 
@@ -21,4 +23,4 @@
 
     </android.support.v4.widget.DrawerLayout>
 
-</RelativeLayout>
+</tools:RelativeLayout>
