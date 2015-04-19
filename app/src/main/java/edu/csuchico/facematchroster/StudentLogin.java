@@ -23,11 +23,10 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
+import edu.csuchico.facematchroster.model.Student;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.csuchico.facematchroster.model.Student;
 
 public class StudentLogin extends Activity {
 
@@ -85,6 +84,7 @@ public class StudentLogin extends Activity {
                 try {
                     Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                     mImageView.setImageBitmap(imageBitmap);
+                    (findViewById(R.id.editImageView)).setVisibility(View.VISIBLE);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -93,6 +93,7 @@ public class StudentLogin extends Activity {
                 if (extras != null) {
                     Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
                     mImageView.setImageBitmap(imageBitmap);
+                    (findViewById(R.id.editImageView)).setVisibility(View.VISIBLE);
                 }
             }
         }
