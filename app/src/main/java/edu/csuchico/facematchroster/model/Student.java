@@ -1,6 +1,7 @@
 package edu.csuchico.facematchroster.model;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
@@ -29,7 +30,7 @@ public class Student {
         this.timestamp = timestamp;
     }
 
-    @DynamoDBIndexHashKey(attributeName = "school_userid")
+    @DynamoDBHashKey(attributeName = "school_userid")
     public String getUserid() {
         return userid;
     }
@@ -38,7 +39,7 @@ public class Student {
         this.userid = userid;
     }
 
-    @DynamoDBAttribute(attributeName = "name")
+    @DynamoDBIndexRangeKey(attributeName = "name")
     public String getName() {
         return name;
     }
