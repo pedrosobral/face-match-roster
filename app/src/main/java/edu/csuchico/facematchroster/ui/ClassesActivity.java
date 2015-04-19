@@ -1,10 +1,12 @@
 package edu.csuchico.facematchroster.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.StudentLogin;
 
 public class ClassesActivity extends BaseActivity {
     public ClassesActivity() {
@@ -34,6 +36,8 @@ public class ClassesActivity extends BaseActivity {
             case R.id.action_settings:
                 break;
             case R.id.debug:
+                Intent intent = new Intent(ClassesActivity.this, StudentLogin.class);
+                startActivity(intent);
                 break;
         }
 
