@@ -20,9 +20,28 @@
     <string name="close_content_drawer">Close the main menu</string>
 
     <string name="hello_world">Hello world!</string>
+
     <string name="title_activity_add_class">Add Class</string>
+
     <string name="title_activity_settings">Settings</string>
+
     <string name="title_activity_feedback">Feedback</string>
+
     <string name="title_activity_help">Help</string>
 
+    <!-- Label on a button that, when clicked, allows user to add an account to the device. -->
+    <string name="add_account">Add Account</string>
+
+    <!-- Button of a popup that shows up when the user has no Google account registered in the
+    device. The popup says that the user needs to have at least one Google account registered in the
+    device to be able to use the app. [CHAR_LIMIT=20] -->
+    <string name="not_now">Not now</string>
+
+    <!-- Error message that shows when the user tries to use the app without a Google account
+    configured on their device. -->
+    <string name="google_account_required_message">To use this application, you must have at least one Google account on your device.</string>
+
+    <!-- Title for an error message that appears when the user tries to use the app without
+    a Google account configured on their device. -->
+    <string name="google_account_required_title">Google Account Required</string>
 </resources>

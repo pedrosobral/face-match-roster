@@ -1,9 +1,14 @@
 package edu.csuchico.facematchroster.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -21,11 +26,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
+
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.util.AccountUtils;
+import edu.csuchico.facematchroster.util.LoginAndAuthHelper;
 
-public class BaseActivity extends ActionBarActivity {
+import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
+import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
+import static edu.csuchico.facematchroster.util.LogUtils.LOGW;
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
+public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelper.Callbacks {
     // symbols for navDrawer items (indices must correspond to array below). This is
     // not a list of items that are necessarily *present* in the Nav Drawer; rather,
     // it's a list of all possible items.
@@ -34,6 +47,7 @@ public class BaseActivity extends ActionBarActivity {
     protected static final int NAVDRAWER_ITEM_SETTINGS = 2;
     protected static final int NAVDRAWER_ITEM_HELP = 4; // 3 separator
     protected static final int NAVDRAWER_ITEM_FEEDBACK = 5;
+    private static final String TAG = makeLogTag(BaseActivity.class);
     //    protected static final int NAVDRAWER_ITEM_INVALID = -1;
 //    protected static final int NAVDRAWER_ITEM_SEPARATOR = -2;
 //    protected static final int NAVDRAWER_ITEM_SEPARATOR_SPECIAL = -3;
@@ -47,6 +61,8 @@ public class BaseActivity extends ActionBarActivity {
             R.drawable.ic_drawer_feedback   // Feedback
     };
     protected int mLastSelectedPosition;
+    // the LoginAndAuthHelper handles signing in to Google Play Services and OAuth
+    private LoginAndAuthHelper mLoginAndAuthHelper;
     private String[] mNavDrawerItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -79,6 +95,107 @@ public class BaseActivity extends ActionBarActivity {
     private Toolbar mActionBarToolbar;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        startLoginProcess();
+    }
+
+    /**
+     * Returns the default account on the device. We use the rule that the first account
+     * should be the default. It's arbitrary, but the alternative would be showing an account
+     * chooser popup which wouldn't be a smooth first experience with the app. Since the user
+     * can easily switch the account with the nav drawer, we opted for this implementation.
+     */
+    private String getDefaultAccount() {
+        // Choose first account on device.
+        LOGD(TAG, "Choosing default account (first account on device)");
+        AccountManager am = AccountManager.get(this);
+        Account[] accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+        if (accounts.length == 0) {
+            // No Google accounts on device.
+            LOGW(TAG, "No Google accounts on device; not setting default account.");
+            return null;
+        }
+
+        LOGD(TAG, "Default account is: " + accounts[0].name);
+        return accounts[0].name;
+    }
+
+    private void complainMustHaveGoogleAccount() {
+        LOGD(TAG, "Complaining about missing Google account.");
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.google_account_required_title)
+                .setMessage(R.string.google_account_required_message)
+                .setPositiveButton(R.string.add_account, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        promptAddAccount();
+                    }
+                })
+                .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
+    }
+
+    private void promptAddAccount() {
+        Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+        intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[]{"com.google"});
+        startActivity(intent);
+        finish();
+    }
+
+    private void startLoginProcess() {
+        LOGD(TAG, "Starting login process.");
+        if (!AccountUtils.hasActiveAccount(this)) {
+            LOGD(TAG, "No active account, attempting to pick a default.");
+            String defaultAccount = getDefaultAccount();
+            if (defaultAccount == null) {
+                LOGE(TAG, "Failed to pick default account (no accounts). Failing.");
+                complainMustHaveGoogleAccount();
+                return;
+            }
+            LOGD(TAG, "Default to: " + defaultAccount);
+            AccountUtils.setActiveAccount(this, defaultAccount);
+        }
+
+        if (!AccountUtils.hasActiveAccount(this)) {
+            LOGD(TAG, "Can't proceed with login -- no account chosen.");
+            return;
+        } else {
+            LOGD(TAG, "Chosen account: " + AccountUtils.getActiveAccountName(this));
+        }
+
+        String accountName = AccountUtils.getActiveAccountName(this);
+        LOGD(TAG, "Chosen account: " + AccountUtils.getActiveAccountName(this));
+
+        if (mLoginAndAuthHelper != null && mLoginAndAuthHelper.getAccountName().equals(accountName)) {
+            LOGD(TAG, "Helper already set up; simply starting it.");
+            mLoginAndAuthHelper.start();
+            return;
+        }
+
+        LOGD(TAG, "Starting login process with account " + accountName);
+
+        if (mLoginAndAuthHelper != null) {
+            LOGD(TAG, "Tearing down old Helper, was " + mLoginAndAuthHelper.getAccountName());
+            if (mLoginAndAuthHelper.isStarted()) {
+                LOGD(TAG, "Stopping old Helper");
+                mLoginAndAuthHelper.stop();
+            }
+            mLoginAndAuthHelper = null;
+        }
+
+        LOGD(TAG, "Creating and starting new Helper with account: " + accountName);
+        mLoginAndAuthHelper = new LoginAndAuthHelper(this, this, accountName);
+        mLoginAndAuthHelper.start();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -86,6 +203,15 @@ public class BaseActivity extends ActionBarActivity {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        LOGD(TAG, "onStop");
+        super.onStop();
+        if (mLoginAndAuthHelper != null) {
+            mLoginAndAuthHelper.stop();
         }
     }
 
@@ -158,6 +284,21 @@ public class BaseActivity extends ActionBarActivity {
         if (mDrawerToggle != null) {
             mDrawerToggle.onConfigurationChanged(newConfig);
         }
+    }
+
+    @Override
+    public void onPlusInfoLoaded(String accountName) {
+
+    }
+
+    @Override
+    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
+        LOGD(TAG, "onAuthSuccess, account " + accountName + ", newlyAuthenticated=" + newlyAuthenticated);
+    }
+
+    @Override
+    public void onAuthFailure(String accountName) {
+        LOGD(TAG, "Auth failed for account " + accountName);
     }
 
     public static class NavDrawerItemAdapter extends ArrayAdapter<String> {
