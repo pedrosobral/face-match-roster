@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.+'
     compile 'de.hdodenhof:circleimageview:1.2.2'
     compile 'com.afollestad:material-dialogs:0.7.2.+'
+    compile 'com.google.android.gms:play-services:7.0.0'
 }
