@@ -301,6 +301,10 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
         LOGD(TAG, "Auth failed for account " + accountName);
     }
 
+    protected void retryAuth() {
+        mLoginAndAuthHelper.retryAuthByUserRequest();
+    }
+
     public static class NavDrawerItemAdapter extends ArrayAdapter<String> {
 
         public NavDrawerItemAdapter(Context context, String[] objects) {
