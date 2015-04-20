@@ -150,6 +150,7 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
     }
 
     private void startLoginProcess() {
+        // TODO: need to show all accounts users has
         LOGD(TAG, "Starting login process.");
         if (!AccountUtils.hasActiveAccount(this)) {
             LOGD(TAG, "No active account, attempting to pick a default.");
