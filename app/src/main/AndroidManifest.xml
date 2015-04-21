@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.csuchico.facematchroster">
+    package="edu.csuchico.facematchroster" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.FaceMatch">
+        android:theme="@style/Theme.FaceMatch" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".StudentLogin"
             android:label="@string/title_activity_student_loggin"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ClassesActivity"
-            android:label="@string/title_activity_classes">
+            android:label="@string/title_activity_classes" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,21 +28,29 @@
         </activity>
         <activity
             android:name=".ui.AddClassActivity"
-            android:label="@string/title_activity_add_class"></activity>
+            android:label="@string/title_activity_add_class" />
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.ClassesActivity">
+            android:parentActivityName=".ui.ClassesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.csuchico.facematchroster.ui.ClassesActivity" />
         </activity>
         <activity
             android:name=".ui.FeedbackActivity"
-            android:label="@string/title_activity_feedback"></activity>
+            android:label="@string/title_activity_feedback" />
         <activity
             android:name=".ui.HelpActivity"
-            android:label="@string/title_activity_help"></activity>
+            android:label="@string/title_activity_help" />
+        <activity
+            android:name=".ui.FlashcardActivity"
+            android:label="@string/title_activity_flash_card"
+            android:parentActivityName=".ui.ClassesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.csuchico.facematchroster.ui.ClassesActivity" />
+        </activity>
     </application>
 
 </manifest>

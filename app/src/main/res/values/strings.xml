@@ -26,5 +26,6 @@
     <string name="title_activity_help">Help</string>
 
     <string name="show_name">Show name</string>
+    <string name="title_activity_flash_card">Class XX</string>
 
 </resources>
