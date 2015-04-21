@@ -1,13 +1,12 @@
 package edu.csuchico.facematchroster.ui;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 
-public class FlashcardActivity extends ActionBarActivity {
+public class FlashcardActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
