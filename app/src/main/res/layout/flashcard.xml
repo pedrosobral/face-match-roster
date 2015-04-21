@@ -95,12 +95,12 @@
 
             <!-- Answer bar -->
 
-            <EditText
+            <TextView
                 android:id="@+id/answer_field"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="text|textNoSuggestions" />
+                android:text="SOME LONG NAME HERE"
+                />
 
             <LinearLayout
                 android:id="@+id/answer_options_layout"
