@@ -53,12 +53,16 @@
         </RelativeLayout>
         <!-- Card and whiteboard -->
 
-        <FrameLayout
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_area_layout"
+            android:layout_below="@+id/top_bar">
+
+            <FrameLayout
             android:id="@+id/flashcard_frame"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/bottom_area_layout"
-            android:layout_below="@+id/top_bar"
             android:layout_margin="0dip">
 
             <FrameLayout
@@ -82,9 +86,19 @@
                     android:focusable="false"
                     android:indeterminate="true"
                     android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/answer_field"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
-        </FrameLayout>
+            </FrameLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/bottom_area_layout"
@@ -93,14 +107,6 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <!-- Answer bar -->
-
-            <TextView
-                android:id="@+id/answer_field"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="SOME LONG NAME HERE"
-                />
 
             <LinearLayout
                 android:id="@+id/answer_options_layout"
