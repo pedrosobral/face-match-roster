@@ -34,12 +34,17 @@ public class ClassesActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_settings: {
+                Intent intent = new Intent(ClassesActivity.this, FlashcardActivity.class);
+                startActivity(intent);
+                ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.FADE);
+            }
                 break;
-            case R.id.debug:
+            case R.id.debug: {
                 Intent intent = new Intent(ClassesActivity.this, StudentLogin.class);
                 startActivity(intent);
                 ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.LEFT);
+            }
                 break;
         }
 
