@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 
-public class AddClassActivity extends ActionBarActivity {
+public class AddClassActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

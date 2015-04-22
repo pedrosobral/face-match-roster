@@ -19,7 +19,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ClassesActivity"
-            android:label="@string/title_activity_classes" >
+            android:label="@string/title_activity_classes"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,9 +34,6 @@
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".ui.ClassesActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.csuchico.facematchroster.ui.ClassesActivity" />
         </activity>
         <activity
             android:name=".ui.FeedbackActivity"
@@ -47,9 +45,7 @@
             android:name=".ui.FlashcardActivity"
             android:label="@string/title_activity_flash_card"
             android:parentActivityName=".ui.ClassesActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.csuchico.facematchroster.ui.ClassesActivity" />
+
         </activity>
     </application>
 

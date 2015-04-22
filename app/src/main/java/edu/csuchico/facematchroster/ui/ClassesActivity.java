@@ -10,11 +10,7 @@ import edu.csuchico.facematchroster.StudentLogin;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
 public class ClassesActivity extends BaseActivity {
-    public ClassesActivity() {
-        // to prevent to call this activity again
-        // see BaseActivity.DrawerItemClickListener
-        mLastSelectedPosition = NAVDRAWER_ITEM_CLASSES;
-    }
+    private static final String TAG = "facematch_" + ClassesActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

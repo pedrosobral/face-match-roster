@@ -34,8 +34,8 @@ public class BaseActivity extends ActionBarActivity {
     protected static final int NAVDRAWER_ITEM_SETTINGS = 2;
     protected static final int NAVDRAWER_ITEM_HELP = 4; // 3 separator
     protected static final int NAVDRAWER_ITEM_FEEDBACK = 5;
-    //    protected static final int NAVDRAWER_ITEM_INVALID = -1;
-//    protected static final int NAVDRAWER_ITEM_SEPARATOR = -2;
+    protected static final int NAVDRAWER_ITEM_INVALID = -1;
+    //    protected static final int NAVDRAWER_ITEM_SEPARATOR = -2;
 //    protected static final int NAVDRAWER_ITEM_SEPARATOR_SPECIAL = -3;
     // icons for navDrawer items (indices must correspond to above array)
     private static final int[] NAVDRAWER_ICON_RES_ID = new int[]{
@@ -81,6 +81,8 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        invalidateLastSelectedPosition();
 
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -160,6 +162,16 @@ public class BaseActivity extends ActionBarActivity {
         }
     }
 
+    /**
+     * Should be called when started a new Activity that:
+     *  1. Doesn't have a NavDrawer layout;
+     *  2. Is not called directly from the NavDrawer
+     *  @see edu.csuchico.facematchroster.ui.BaseActivity.DrawerItemClickListener
+     */
+    protected void invalidateLastSelectedPosition() {
+        mLastSelectedPosition = NAVDRAWER_ITEM_INVALID;
+    }
+
     public static class NavDrawerItemAdapter extends ArrayAdapter<String> {
 
         public NavDrawerItemAdapter(Context context, String[] objects) {
@@ -201,18 +213,22 @@ public class BaseActivity extends ActionBarActivity {
                     case NAVDRAWER_ITEM_CLASSES:
                         intent = new Intent(getBaseContext(), ClassesActivity.class);
                         startActivity(intent);
-                        finish();
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+
                         break;
                     case NAVDRAWER_ITEM_ADD_CLASS:
                         intent = new Intent(getBaseContext(), AddClassActivity.class);
                         startActivity(intent);
-                        finish();
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+                        invalidateLastSelectedPosition();
+
                         break;
                     case NAVDRAWER_ITEM_SETTINGS:
                         intent = new Intent(getBaseContext(), SettingsActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
-                        mLastSelectedPosition = NAVDRAWER_ITEM_CLASSES; // Settings back to classes
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.FADE);
+                        invalidateLastSelectedPosition();
+
                         break;
                     case NAVDRAWER_ITEM_HELP:
                         intent = new Intent(getBaseContext(), HelpActivity.class);
