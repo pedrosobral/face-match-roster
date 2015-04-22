@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,11 +47,17 @@ public class BaseActivity extends ActionBarActivity {
             R.drawable.ic_drawer_help,      // Help
             R.drawable.ic_drawer_feedback   // Feedback
     };
+    private static final String TAG = "facematch_" + BaseActivity.class.getSimpleName();
+    protected static boolean sIsDrawerOpen = false;
     protected int mLastSelectedPosition;
     private String[] mNavDrawerItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    public ActionBarDrawerToggle getDrawerToggle() {
+        return mDrawerToggle;
+    }
 
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
@@ -105,7 +112,22 @@ public class BaseActivity extends ActionBarActivity {
             }
 
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mActionBarToolbar,
-                    R.string.open_content_drawer, R.string.close_content_drawer);
+                    R.string.open_content_drawer, R.string.close_content_drawer) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    sIsDrawerOpen = true;
+                    supportInvalidateOptionsMenu();
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+                    sIsDrawerOpen = false;
+                    supportInvalidateOptionsMenu();
+                }
+            };
+
 
             // Set the drawer toggle as the DrawerListener
             mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -127,20 +149,6 @@ public class BaseActivity extends ActionBarActivity {
             }
         }
         return mActionBarToolbar;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
