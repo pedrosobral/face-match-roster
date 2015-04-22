@@ -2,6 +2,7 @@ package edu.csuchico.facematchroster.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,12 +23,18 @@ public class ClassesActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        if (sIsDrawerOpen) {
+            return false;
+        }
         getMenuInflater().inflate(R.menu.menu_classes, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (getDrawerToggle() != null && getDrawerToggle().onOptionsItemSelected(item)) {
+            return true;
+        }
 
         switch (item.getItemId()) {
             case R.id.action_settings: {
