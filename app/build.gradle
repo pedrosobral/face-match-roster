@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "edu.csuchico.facematchroster"
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -25,4 +25,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.2'
     compile 'com.afollestad:material-dialogs:0.7.2.+'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'com.google.android.gms:play-services:7.0.0'
 }

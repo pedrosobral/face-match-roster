@@ -29,8 +29,10 @@ import java.util.List;
 
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Student;
+import edu.csuchico.facematchroster.ui.BaseActivity;
+import edu.csuchico.facematchroster.util.AccountUtils;
 
-public class StudentLogin extends Activity {
+public class StudentLogin extends BaseActivity {
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private EditText mName;
@@ -75,6 +77,14 @@ public class StudentLogin extends Activity {
         //hack for debugging only, do not use in prod
         //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         //StrictMode.setThreadPolicy(policy);
+    }
+
+    @Override
+    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
+        super.onAuthSuccess(accountName, newlyAuthenticated);
+
+        mName.setText(AccountUtils.getPlusName(this));
+        mEmail.setText(accountName);
     }
 
     @Override
