@@ -56,11 +56,12 @@ import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
  * tied to an Activity. Do not attempt to share it across Activities, as unhappiness will
  * result.
  */
-public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<People.LoadPeopleResult> {
+public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Auth scopes we need
     public static final String AUTH_SCOPES[] = {
-            "https://www.googleapis.com/auth/plus.profile.emails.read"};
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email"};
     static final String AUTH_TOKEN_TYPE;
 
     static {
@@ -195,14 +196,16 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
 
         LOGD(TAG, "Helper connected, account " + mAccountName);
 
-        // load user's Google+ profile, if we don't have it yet
+        // load user's Name, if we don't have it yet
         if (!AccountUtils.hasPlusInfo(activity, mAccountName)) {
             LOGD(TAG, "We don't have Google+ info for " + mAccountName + " yet, so loading.");
-            PendingResult<People.LoadPeopleResult> result = Plus.PeopleApi.load(mGoogleApiClient, "me");
-            result.setResultCallback(this);
+            Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
+            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
         } else {
-            LOGD(TAG, "No need for Google+ info, we already have it.");
+            LOGD(TAG, "No need for Name info, we already have it.");
         }
+
 
         // try to authenticate, if we don't have a token yet
         if (!AccountUtils.hasToken(activity, mAccountName)) {
@@ -277,52 +280,6 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
                     REQUEST_PLAY_SERVICES_ERROR_DIALOG).show();
         } else {
             reportAuthFailure();
-        }
-    }
-
-    // Called asynchronously -- result of loadPeople() call
-    @Override
-    public void onResult(People.LoadPeopleResult loadPeopleResult) {
-        LOGD(TAG, "onPeopleLoaded, status=" + loadPeopleResult.getStatus().toString());
-        if (loadPeopleResult.getStatus().isSuccess()) {
-            PersonBuffer personBuffer = loadPeopleResult.getPersonBuffer();
-            if (personBuffer != null && personBuffer.getCount() > 0) {
-                LOGD(TAG, "Got plus profile for account " + mAccountName);
-                Person currentUser = personBuffer.get(0);
-                personBuffer.close();
-
-                // Record profile ID, image URL and name
-                LOGD(TAG, "Saving plus profile ID: " + currentUser.getId());
-                AccountUtils.setPlusProfileId(mAppContext, mAccountName, currentUser.getId());
-                String imageUrl = currentUser.getImage().getUrl();
-                if (imageUrl != null) {
-                    imageUrl = Uri.parse(imageUrl)
-                            .buildUpon().appendQueryParameter("sz", "256").build().toString();
-                }
-                LOGD(TAG, "Saving plus image URL: " + imageUrl);
-//                AccountUtils.setPlusImageUrl(mAppContext, mAccountName, imageUrl);
-                LOGD(TAG, "Saving plus display name: " + currentUser.getDisplayName());
-                AccountUtils.setPlusName(mAppContext, mAccountName, currentUser.getDisplayName());
-                Person.Cover cover = currentUser.getCover();
-                if (cover != null) {
-                    Person.Cover.CoverPhoto coverPhoto = cover.getCoverPhoto();
-                    if (coverPhoto != null) {
-                        LOGD(TAG, "Saving plus cover URL: " + coverPhoto.getUrl());
-//                        AccountUtils.setPlusCoverUrl(mAppContext, mAccountName, coverPhoto.getUrl());
-                    }
-                } else {
-                    LOGD(TAG, "Profile has no cover.");
-                }
-
-                Callbacks callbacks;
-                if (null != (callbacks = mCallbacksRef.get())) {
-                    callbacks.onPlusInfoLoaded(mAccountName);
-                }
-            } else {
-                LOGE(TAG, "Plus response was empty! Failed to load profile.");
-            }
-        } else {
-            LOGE(TAG, "Failed to load plus proflie, error " + loadPeopleResult.getStatus().getStatusCode());
         }
     }
 
