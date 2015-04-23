@@ -3,15 +3,50 @@ package edu.csuchico.facematchroster.ui;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.gc.materialdesign.views.ButtonRectangle;
 
 import edu.csuchico.facematchroster.R;
 
 public class FlashcardActivity extends BaseActivity {
 
+    private LinearLayout mFlipCardLayout;
+
+    private ButtonRectangle mFlashcardLayoutEase1;
+    private ButtonRectangle mFlashcardLayoutEase2;
+    private ButtonRectangle mFlashcardLayoutEase3;
+    private ButtonRectangle mFlashcardLayoutEase4;
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            showAnswerButtons();
+        }
+    };
+
+    protected void showAnswerButtons() {
+        mFlipCardLayout.setVisibility(View.GONE);
+
+        mFlashcardLayoutEase1.setVisibility(View.VISIBLE);
+        mFlashcardLayoutEase2.setVisibility(View.VISIBLE);
+        mFlashcardLayoutEase3.setVisibility(View.VISIBLE);
+        mFlashcardLayoutEase4.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.flashcard);
+
+        mFlipCardLayout = (LinearLayout) findViewById(R.id.flashcard_layout_flip);
+        findViewById(R.id.flip_card).setOnClickListener(listener);
+
+        mFlashcardLayoutEase1 = (ButtonRectangle) findViewById(R.id.flashcard_layout_ease1);
+        mFlashcardLayoutEase2 = (ButtonRectangle) findViewById(R.id.flashcard_layout_ease2);
+        mFlashcardLayoutEase3 = (ButtonRectangle) findViewById(R.id.flashcard_layout_ease3);
+        mFlashcardLayoutEase4 = (ButtonRectangle) findViewById(R.id.flashcard_layout_ease4);
     }
 
     @Override

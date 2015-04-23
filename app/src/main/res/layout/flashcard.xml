@@ -56,7 +56,7 @@
                     android:textSize="14sp" />
 
             </RelativeLayout>
-            <!-- Card and whiteboard -->
+            <!-- Card -->
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -92,19 +92,43 @@
                             android:indeterminate="true"
                             android:visibility="invisible" />
 
-                        <TextView
-                            android:id="@+id/answer_field"
+                        <ScrollView
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:visibility="gone" />
+                            android:layout_height="fill_parent">
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/answer_field"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:scaleType="centerInside"
+                                    android:layout_gravity="center_horizontal"
+                                    android:src="@drawable/photo_test"
+                                    android:visibility="visible" />
+
+                                <TextView
+                                    android:id="@+id/flashcard_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Here is going to appear the name"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:layout_gravity="center_horizontal" />
+                            </LinearLayout>
+                        </ScrollView>
                     </RelativeLayout>
 
                 </FrameLayout>
+
+
             </RelativeLayout>
 
+            <!--Bottom area-->
             <LinearLayout
                 android:id="@+id/bottom_area_layout"
                 android:layout_width="fill_parent"
@@ -129,8 +153,9 @@
                             android:id="@+id/flip_card"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
+                            android:text="@string/show_name"
                             materialdesign:rippleSpeed="50"
-                            android:text="@string/show_name" />
+                            android:layout_gravity="right" />
                     </LinearLayout>
 
                     <com.gc.materialdesign.views.ButtonRectangle
@@ -138,9 +163,9 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        materialdesign:rippleSpeed="50"
                         android:text="@string/show_name"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        materialdesign:rippleSpeed="50" />
 
 
                     <com.gc.materialdesign.views.ButtonRectangle
@@ -148,27 +173,27 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        materialdesign:rippleSpeed="50"
                         android:text="@string/show_name"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        materialdesign:rippleSpeed="50" />
 
                     <com.gc.materialdesign.views.ButtonRectangle
                         android:id="@+id/flashcard_layout_ease3"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        materialdesign:rippleSpeed="50"
                         android:text="@string/show_name"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        materialdesign:rippleSpeed="50" />
 
                     <com.gc.materialdesign.views.ButtonRectangle
                         android:id="@+id/flashcard_layout_ease4"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        materialdesign:rippleSpeed="50"
                         android:text="@string/show_name"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        materialdesign:rippleSpeed="50" />
 
                 </LinearLayout>
             </LinearLayout>
