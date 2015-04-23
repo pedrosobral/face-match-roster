@@ -60,8 +60,6 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
 
     // Auth scopes we need
     public static final String AUTH_SCOPES[] = {
-            Scopes.PLUS_LOGIN,
-            Scopes.DRIVE_APPFOLDER,
             "https://www.googleapis.com/auth/plus.profile.emails.read"};
     static final String AUTH_TOKEN_TYPE;
 
