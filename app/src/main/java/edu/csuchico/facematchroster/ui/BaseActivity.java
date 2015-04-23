@@ -63,7 +63,7 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
             R.drawable.ic_drawer_help,      // Help
             R.drawable.ic_drawer_feedback   // Feedback
     };
-    protected static boolean sIsDrawerOpen = false;
+//    protected static boolean sIsDrawerOpen = false;
     protected int mLastSelectedPosition;
     // the LoginAndAuthHelper handles signing in to Google Play Services and OAuth
     private LoginAndAuthHelper mLoginAndAuthHelper;
@@ -71,10 +71,6 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    public ActionBarDrawerToggle getDrawerToggle() {
-        return mDrawerToggle;
-    }
 
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
@@ -107,6 +103,23 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
         super.onStart();
 
         startLoginProcess();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    public DrawerLayout getDrawerLayout() {
+        return mDrawerLayout;
+    }
+
+    public ActionBarDrawerToggle getDrawerToggle() {
+        return mDrawerToggle;
     }
 
     /**
@@ -244,14 +257,14 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
                 @Override
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);
-                    sIsDrawerOpen = true;
+//                    sIsDrawerOpen = true;
                     supportInvalidateOptionsMenu();
                 }
 
                 @Override
                 public void onDrawerClosed(View drawerView) {
                     super.onDrawerClosed(drawerView);
-                    sIsDrawerOpen = false;
+//                    sIsDrawerOpen = false;
                     supportInvalidateOptionsMenu();
                 }
             };
