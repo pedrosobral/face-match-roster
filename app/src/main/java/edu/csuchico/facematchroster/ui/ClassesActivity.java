@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.gc.materialdesign.views.ButtonRectangle;
 
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.StudentLogin;
@@ -17,6 +20,14 @@ public class ClassesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
+
+        findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ClassesActivity.this, FlashcardActivity.class));
+                ActivityTransitionAnimation.slide(ClassesActivity.this, ActivityTransitionAnimation.LEFT);
+            }
+        });
     }
 
 
@@ -38,9 +49,7 @@ public class ClassesActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.action_settings: {
-                Intent intent = new Intent(ClassesActivity.this, FlashcardActivity.class);
-                startActivity(intent);
-                ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.FADE);
+
             }
                 break;
             case R.id.debug: {
