@@ -11,14 +11,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,7 +36,7 @@ import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGW;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelper.Callbacks {
+public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelper.Callbacks {
     // symbols for navDrawer items (indices must correspond to array below). This is
     // not a list of items that are necessarily *present* in the Nav Drawer; rather,
     // it's a list of all possible items.
@@ -107,7 +104,7 @@ public class BaseActivity extends ActionBarActivity implements LoginAndAuthHelpe
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
             mDrawerLayout.closeDrawer(Gravity.START);
             return;
         }
