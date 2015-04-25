@@ -18,6 +18,14 @@ public class Card {
 
     private Date mUpdateDate;
 
+    public Card(String mPhoto, String mName, float mEFactor, Date mCreationDate, Date mUpdateDate) {
+        this.mPhoto = mPhoto;
+        this.mName = mName;
+        this.mEFactor = mEFactor;
+        this.mCreationDate = mCreationDate;
+        this.mUpdateDate = mUpdateDate;
+    }
+
     public String getPhoto() {
         return mPhoto;
     }
