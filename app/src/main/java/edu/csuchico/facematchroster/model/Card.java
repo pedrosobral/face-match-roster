@@ -7,6 +7,8 @@ import java.util.Date;
  */
 public class Card {
 
+    private int mId;
+
     private String mPhoto; // front card
 
     private String mName; // back card
@@ -24,6 +26,14 @@ public class Card {
         this.mEFactor = mEFactor;
         this.mCreationDate = mCreationDate;
         this.mUpdateDate = mUpdateDate;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int mId) {
+        this.mId = mId;
     }
 
     public String getPhoto() {
