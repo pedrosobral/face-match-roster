@@ -19,12 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.gc.materialdesign.views.ButtonRectangle
-                android:id="@+id/test_button"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FaceMatch Class 567"
-                materialdesign:rippleSpeed="50" />
+                android:layout_height="match_parent"/>
+
         </FrameLayout>
 
         <!-- The navigation drawer -->
