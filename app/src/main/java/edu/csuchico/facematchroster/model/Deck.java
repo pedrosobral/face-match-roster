@@ -1,8 +1,7 @@
 package edu.csuchico.facematchroster.model;
 
-import java.util.Date;
-
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Pedro Henrique on 4/25/15 - 7:51 PM.

@@ -2,20 +2,19 @@ package edu.csuchico.facematchroster.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.gc.materialdesign.views.ButtonRectangle;
-
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.StudentLogin;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 public class ClassesActivity extends BaseActivity {
-    private static final String TAG = "facematch_" + ClassesActivity.class.getSimpleName();
+    private static final String TAG = makeLogTag(ClassesActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +51,13 @@ public class ClassesActivity extends BaseActivity {
             case R.id.action_settings: {
 
             }
-                break;
+            break;
             case R.id.debug: {
                 Intent intent = new Intent(ClassesActivity.this, StudentLogin.class);
                 startActivity(intent);
                 ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.LEFT);
             }
-                break;
+            break;
         }
 
         return super.onOptionsItemSelected(item);

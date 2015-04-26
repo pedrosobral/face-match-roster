@@ -8,8 +8,11 @@ import android.view.View;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 
 public class SettingsActivity extends BaseActivity {
+    private static final String TAG = makeLogTag(SettingsActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

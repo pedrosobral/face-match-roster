@@ -60,7 +60,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
             R.drawable.ic_drawer_help,      // Help
             R.drawable.ic_drawer_feedback   // Feedback
     };
-//    protected static boolean sIsDrawerOpen = false;
+    //    protected static boolean sIsDrawerOpen = false;
     protected int mLastSelectedPosition;
     // the LoginAndAuthHelper handles signing in to Google Play Services and OAuth
     private LoginAndAuthHelper mLoginAndAuthHelper;
@@ -310,9 +310,10 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
 
     /**
      * Should be called when started a new Activity that:
-     *  1. Doesn't have a NavDrawer layout;
-     *  2. Is not called directly from the NavDrawer
-     *  @see edu.csuchico.facematchroster.ui.BaseActivity.DrawerItemClickListener
+     * 1. Doesn't have a NavDrawer layout;
+     * 2. Is not called directly from the NavDrawer
+     *
+     * @see edu.csuchico.facematchroster.ui.BaseActivity.DrawerItemClickListener
      */
     protected void invalidateLastSelectedPosition() {
         mLastSelectedPosition = NAVDRAWER_ITEM_INVALID;

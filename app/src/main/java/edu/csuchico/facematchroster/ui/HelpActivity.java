@@ -7,7 +7,11 @@ import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 public class HelpActivity extends ActionBarActivity {
+    private static final String TAG = makeLogTag(HelpActivity.class);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

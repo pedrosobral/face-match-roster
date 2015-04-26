@@ -1,6 +1,5 @@
 package edu.csuchico.facematchroster;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,7 +31,10 @@ import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 public class StudentLogin extends BaseActivity {
+    private static final String TAG = makeLogTag(StudentLogin.class);
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private EditText mName;
