@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start|center_vertical"
+    android:paddingLeft="@dimen/keyline_1"
+    android:paddingRight="@dimen/keyline_1"
     android:orientation="horizontal">
 
+    <TextView
+        android:id="@+id/icon"
+        android:textSize="16sp"
+        android:textColor="#FFFF"
+        android:paddingLeft="1dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginRight="16dp"
+
+        android:background="@drawable/circular_shape"/>
 
     <TextView
         android:id="@+id/deckName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="16sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_toRightOf="@+id/icon"
+        android:layout_toEndOf="@+id/icon"/>
 
     <TextView
         android:id="@+id/learn_number"
