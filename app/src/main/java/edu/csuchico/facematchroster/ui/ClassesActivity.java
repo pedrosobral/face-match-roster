@@ -21,6 +21,7 @@ import edu.csuchico.facematchroster.StudentLogin;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Deck;
 
+import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class ClassesActivity extends BaseActivity {
@@ -28,6 +29,19 @@ public class ClassesActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private DeckAdapter mDeckAdapter;
+
+    private DeckAdapter.OnItemClickListener onItemClickListener = new DeckAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(Deck deck) {
+            LOGD(TAG, "onItemClick: " + deck.getTitle());
+        }
+
+        @Override
+        public void onIconClick(final View view) {
+            LOGD(TAG, "onIconClick: " + ((TextView)view).getText());
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +51,26 @@ public class ClassesActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         mDeckAdapter = new DeckAdapter(getData());
+        mDeckAdapter.setOnItemClickListener(onItemClickListener);
 
         mRecyclerView.setAdapter(mDeckAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ClassesActivity.this));
-
     }
 
     private List<Deck> getData() {
+        // TODO: make up data just for test
         List<Deck> listDeck = new ArrayList<>();
+        String[][] names = new String[][]{
+                {"Android Development", "567"},
+                {"Operating Systems", "340"},
+                {"Systems Programming", "540"},
+                {"Programming and Algorithms II", "211"},
+                {"Fundamental UNIX System Administration", "444"}};
         for (int i = 0; i < 5; i++) {
-            listDeck.add(new Deck(i, "Class: " + i, null, null, null));
+            listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
+        }
+        for (int i = 0; i < 5; i++) {
+            listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
         }
         return listDeck;
     }
@@ -86,6 +110,7 @@ public class ClassesActivity extends BaseActivity {
 
     public static class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
 
+        private OnItemClickListener mOnItemClickListener;
         private List<Deck> mDataModel = Collections.emptyList();
 
         public DeckAdapter(List<Deck> data) {
@@ -103,6 +128,9 @@ public class ClassesActivity extends BaseActivity {
             Deck deck = mDataModel.get(position);
 
             holder.mTextView.setText(deck.getTitle());
+            holder.mIcon.setText(new Integer(deck.getId()).toString());
+
+            holder.onBind(deck);
         }
 
         @Override
@@ -110,16 +138,52 @@ public class ClassesActivity extends BaseActivity {
             return mDataModel.size();
         }
 
+        public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+            this.mOnItemClickListener = mOnItemClickListener;
+        }
+
+        public static interface OnItemClickListener {
+            public void onItemClick(Deck deck);
+
+            public void onIconClick(View view);
+        }
+
         // ViewHolder class to save inflated views for recycling
         class ViewHolder extends RecyclerView.ViewHolder {
 
             public TextView mTextView;
+            public TextView mIcon;
+            private Deck mDeck;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 mTextView = (TextView) itemView.findViewById(R.id.deckName);
+                mIcon = (TextView) itemView.findViewById(R.id.icon);
+
+                mIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onIconClick(mIcon);
+                        }
+                    }
+                });
+                mTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(mDeck);
+                        }
+                    }
+                });
+            }
+
+            public void onBind(Deck deck) {
+                mDeck = deck;
             }
         }
     }
+
+
 }
