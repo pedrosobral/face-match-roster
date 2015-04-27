@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class Deck {
 
-    private int mId;
+    private String mId;
 
     private String mTitle;
 
@@ -18,7 +18,7 @@ public class Deck {
 
     private Date mUpdateDate;
 
-    public Deck(int mId, String mTitle, ArrayList<Card> mDeck, Date mCreationDate, Date mUpdateDate) {
+    public Deck(String mId, String mTitle, ArrayList<Card> mDeck, Date mCreationDate, Date mUpdateDate) {
         this.mId = mId;
         this.mTitle = mTitle;
         this.mDeck = mDeck;
@@ -26,11 +26,11 @@ public class Deck {
         this.mUpdateDate = mUpdateDate;
     }
 
-    public int getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(int mId) {
+    public void setId(String mId) {
         this.mId = mId;
     }
 
