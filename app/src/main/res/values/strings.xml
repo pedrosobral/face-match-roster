@@ -47,4 +47,5 @@
     <!-- Title for an error message that appears when the user tries to use the app without
     a Google account configured on their device. -->
     <string name="google_account_required_title">Google Account Required</string>
+    <string name="action_save">Save</string>
 </resources>
