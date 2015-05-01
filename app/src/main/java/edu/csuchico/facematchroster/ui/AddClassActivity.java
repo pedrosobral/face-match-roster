@@ -4,26 +4,38 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import edu.csuchico.facematchroster.R;
 
+import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class AddClassActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
+    private EditText mClassName;
+    private EditText mClassNumber;
+    private EditText mClassSection;
+    private Spinner mSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
 
+        mClassName = (EditText) findViewById(R.id.name_class);
+        mClassNumber = (EditText) findViewById(R.id.class_number);
+        mClassSection = (EditText) findViewById(R.id.class_section);
+
         setupSpinner();
     }
 
     private void setupSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.school_term_spinner);
+        mSpinner = (Spinner) findViewById(R.id.school_term_spinner);
 
         // TODO: must be generated automatically
         String[] schoolTermList = new String[]{"Spring 2015", "Fall 2015", "Summer 2015"};
@@ -33,9 +45,8 @@ public class AddClassActivity extends BaseActivity {
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        mSpinner.setAdapter(adapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,10 +63,20 @@ public class AddClassActivity extends BaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_save) {
+            save();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void save() {
+        LOGD(TAG, "Class Name: " + mClassName.getText().toString());
+        LOGD(TAG, "Class Number: " + mClassNumber.getText().toString());
+        LOGD(TAG, "Class Section: " + mClassSection.getText().toString());
+        LOGD(TAG, "Class Term: " + mSpinner.getSelectedItem().toString());
+
+        Toast.makeText(AddClassActivity.this, "Saved", Toast.LENGTH_LONG).show();
     }
 }
