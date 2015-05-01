@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +45,14 @@ public class ClassesActivity extends BaseActivity {
         }
     };
 
+    private View.OnClickListener onAddClassClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(ClassesActivity.this, AddClassActivity.class));
+            ((FloatingActionsMenu) findViewById(R.id.fab)).collapse();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,8 @@ public class ClassesActivity extends BaseActivity {
 
         mRecyclerView.setAdapter(mDeckAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ClassesActivity.this));
+
+        (findViewById(R.id.add_class)).setOnClickListener(onAddClassClickListener);
     }
 
     private List<Deck> getData() {
@@ -69,9 +82,7 @@ public class ClassesActivity extends BaseActivity {
         for (int i = 0; i < 5; i++) {
             listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
         }
-        for (int i = 0; i < 5; i++) {
-            listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
-        }
+
         return listDeck;
     }
 
