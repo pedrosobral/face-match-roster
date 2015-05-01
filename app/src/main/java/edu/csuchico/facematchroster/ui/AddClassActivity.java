@@ -3,6 +3,8 @@ package edu.csuchico.facematchroster.ui;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import edu.csuchico.facematchroster.R;
 
@@ -12,11 +14,26 @@ public class AddClassActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
+
+        setupSpinner();
+    }
+
+    private void setupSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.school_term_spinner);
+
+        // TODO: must be generated automatically
+        String[] schoolTermList = new String[]{"Spring 2015", "Fall 2015", "Summer 2015"};
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, schoolTermList);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
     }
 
 
