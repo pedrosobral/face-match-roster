@@ -194,8 +194,8 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
         if (!AccountUtils.hasPlusInfo(activity, mAccountName)) {
             LOGD(TAG, "We don't have Google+ info for " + mAccountName + " yet, so loading.");
             Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
-            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
+//            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
+//            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
         } else {
             LOGD(TAG, "No need for Name info, we already have it.");
         }
