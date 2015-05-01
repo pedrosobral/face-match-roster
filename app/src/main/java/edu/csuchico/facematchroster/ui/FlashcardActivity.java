@@ -10,7 +10,10 @@ import com.gc.materialdesign.views.ButtonRectangle;
 
 import edu.csuchico.facematchroster.R;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 public class FlashcardActivity extends BaseActivity {
+    private static final String TAG = makeLogTag(FlashcardActivity.class);
 
     private LinearLayout mFlipCardLayout;
 

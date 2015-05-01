@@ -1,13 +1,17 @@
 package edu.csuchico.facematchroster.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import edu.csuchico.facematchroster.R;
 
+import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
+
 public class AddClassActivity extends BaseActivity {
+
+    private static final String TAG = makeLogTag(AddClassActivity.class);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

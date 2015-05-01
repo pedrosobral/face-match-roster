@@ -22,7 +22,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.google.android.gms.auth.*;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableNotifiedException;
 import com.google.android.gms.common.Scopes;
 
 import java.io.IOException;
