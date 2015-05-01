@@ -30,9 +30,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|right"
                 android:layout_margin="16dp"
-                fab:fab_colorNormal="@color/colorAccent"
                 fab:fab_colorPressed="@color/colorAccent"
-                />
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_labelStyle="@style/menu_labels_style">
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_size="mini"
+                    fab:fab_icon="@drawable/ic_school"
+                    fab:fab_colorNormal="#009688"
+                    fab:fab_colorPressed="@android:color/secondary_text_dark"
+                    fab:fab_title="Add Class" />
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
         </FrameLayout>
 
