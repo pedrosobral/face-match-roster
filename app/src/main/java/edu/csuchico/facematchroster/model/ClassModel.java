@@ -9,7 +9,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 /**
  * Created by aliansari on 4/30/15.
  */
-@DynamoDBTable(tableName = "csuchico_master")
+@DynamoDBTable(tableName = "csuchico_all_classes")
 
 public class ClassModel {
     private String InstructorName;
@@ -20,6 +20,17 @@ public class ClassModel {
     private String ClassSection;
     private String Semester;
     private String School;
+
+    public ClassModel(String instructorName, long timestamp, String instructorEmail, String className, String classCode, String classSection, String semester, String school) {
+        InstructorName = instructorName;
+        this.timestamp = timestamp;
+        InstructorEmail = instructorEmail;
+        ClassName = className;
+        ClassCode = classCode;
+        ClassSection = classSection;
+        Semester = semester;
+        School = school;
+    }
 
     @DynamoDBIndexRangeKey(attributeName = "unx_timestamp")
     public long getTimestamp() {

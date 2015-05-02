@@ -3,6 +3,7 @@ package edu.csuchico.facematchroster.helper;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Regions;
@@ -22,9 +23,32 @@ public class SaveToCognitoTask extends AsyncTask<Object, Integer, Boolean> {
     private static final String TAG = makeLogTag(SaveToCognitoTask.class);
 
     private Context mContext;
+    private MaterialDialog mDialog;
+    private OnCognitoResult mResult;
 
-    public SaveToCognitoTask(Context mContext) {
+    private SaveToCognitoTask(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
         this.mContext = mContext;
+        this.mDialog = mDialog;
+        this.mResult = mResult;
+    }
+
+    public static SaveToCognitoTask saveToCognitoWithDialog(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
+        return new SaveToCognitoTask(mContext, mDialog, mResult);
+    }
+
+    public static SaveToCognitoTask saveToCognitoWithoutDialog(Context mContext) {
+        return new SaveToCognitoTask(mContext, null, null);
+    }
+
+    public interface OnCognitoResult {
+        void saveToCognitoResult(boolean result);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (mDialog != null) {
+            mDialog.show();
+        }
     }
 
     protected Boolean doInBackground(Object... objects) {
@@ -59,6 +83,16 @@ public class SaveToCognitoTask extends AsyncTask<Object, Integer, Boolean> {
         }
 
         return true;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+        if (mResult != null) {
+            mResult.saveToCognitoResult(aBoolean);
+        }
     }
 
     private Object getModelToSave(Object[] objects) {
