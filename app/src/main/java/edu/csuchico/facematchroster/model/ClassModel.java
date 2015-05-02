@@ -11,7 +11,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  */
 @DynamoDBTable(tableName = "csuchico_master")
 
-public class Class {
+public class ClassModel {
     private String InstructorName;
     private long timestamp;
     private String InstructorEmail;
