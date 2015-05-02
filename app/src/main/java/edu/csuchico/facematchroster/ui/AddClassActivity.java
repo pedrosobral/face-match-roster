@@ -9,7 +9,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import edu.csuchico.facematchroster.R;
-import edu.csuchico.facematchroster.helper.SaveToCognitoHelper;
+import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 import edu.csuchico.facematchroster.model.ClassModel;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;

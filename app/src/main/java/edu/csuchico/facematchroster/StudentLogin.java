@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
-import edu.csuchico.facematchroster.helper.SaveToCognitoHelper;
+import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;

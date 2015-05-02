@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.helper;
+package edu.csuchico.facematchroster.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
