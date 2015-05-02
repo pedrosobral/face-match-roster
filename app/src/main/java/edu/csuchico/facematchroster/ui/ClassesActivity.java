@@ -12,13 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.StudentLogin;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
@@ -30,7 +32,11 @@ import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 public class ClassesActivity extends BaseActivity {
     private static final String TAG = makeLogTag(ClassesActivity.class);
 
-    private RecyclerView mRecyclerView;
+    @InjectView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+    @InjectView(R.id.fab)
+    FloatingActionsMenu mFloatActionMenu;
+
     private DeckAdapter mDeckAdapter;
 
     private DeckAdapter.OnItemClickListener onItemClickListener = new DeckAdapter.OnItemClickListener() {
@@ -41,33 +47,27 @@ public class ClassesActivity extends BaseActivity {
 
         @Override
         public void onIconClick(final View view) {
-            LOGD(TAG, "onIconClick: " + ((TextView)view).getText());
+            LOGD(TAG, "onIconClick: " + ((TextView) view).getText());
         }
     };
 
-    private View.OnClickListener onAddClassClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            startActivity(new Intent(ClassesActivity.this, AddClassActivity.class));
-            ((FloatingActionsMenu) findViewById(R.id.fab)).collapse();
-        }
-    };
-
+    @OnClick(R.id.add_class)
+    public void onAddClass() {
+        startActivity(new Intent(ClassesActivity.this, AddClassActivity.class));
+        mFloatActionMenu.collapse();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        ButterKnife.inject(this);
 
         mDeckAdapter = new DeckAdapter(getData());
         mDeckAdapter.setOnItemClickListener(onItemClickListener);
 
         mRecyclerView.setAdapter(mDeckAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ClassesActivity.this));
-
-        (findViewById(R.id.add_class)).setOnClickListener(onAddClassClickListener);
     }
 
     private List<Deck> getData() {
@@ -153,24 +153,25 @@ public class ClassesActivity extends BaseActivity {
             this.mOnItemClickListener = mOnItemClickListener;
         }
 
-        public static interface OnItemClickListener {
-            public void onItemClick(Deck deck);
+        public interface OnItemClickListener {
+            void onItemClick(Deck deck);
 
-            public void onIconClick(View view);
+            void onIconClick(View view);
         }
 
         // ViewHolder class to save inflated views for recycling
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            public TextView mTextView;
-            public TextView mIcon;
+            @InjectView(R.id.deckName)
+            TextView mTextView;
+            @InjectView(R.id.icon)
+            TextView mIcon;
             private Deck mDeck;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                mTextView = (TextView) itemView.findViewById(R.id.deckName);
-                mIcon = (TextView) itemView.findViewById(R.id.icon);
+                ButterKnife.inject(this, itemView);
 
                 mIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
