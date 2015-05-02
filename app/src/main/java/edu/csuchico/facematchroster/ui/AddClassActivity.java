@@ -8,12 +8,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.concurrent.ExecutionException;
+
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.helper.SaveToCognitoTask;
+import edu.csuchico.facematchroster.model.ClassModel;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class AddClassActivity extends BaseActivity {
+public class AddClassActivity extends BaseActivity implements SaveToCognitoTask.OnCognitoResult {
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
@@ -72,11 +78,22 @@ public class AddClassActivity extends BaseActivity {
     }
 
     private void save() {
-        LOGD(TAG, "Class Name: " + mClassName.getText().toString());
-        LOGD(TAG, "Class Number: " + mClassNumber.getText().toString());
-        LOGD(TAG, "Class Section: " + mClassSection.getText().toString());
-        LOGD(TAG, "Class Term: " + mSpinner.getSelectedItem().toString());
+        ClassModel newClass = new ClassModel("Bryan Dixon",
+                System.currentTimeMillis(), "bryan@csuchico.edu", mClassName.getText().toString(),
+                mClassNumber.getText().toString(), mClassSection.getText().toString(),
+                mSpinner.getSelectedItem().toString(), "CSU Chico");
 
-        Toast.makeText(AddClassActivity.this, "Saved", Toast.LENGTH_LONG).show();
+        SaveToCognitoTask
+                .saveToCognitoWithoutDialog(AddClassActivity.this, AddClassActivity.this)
+                .execute(newClass);
+    }
+
+    @Override
+    public void saveToCognitoResult(boolean result) {
+        if (result == true) {
+            Toast.makeText(AddClassActivity.this, "Saved", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(AddClassActivity.this, "Not saved", Toast.LENGTH_LONG).show();
+        }
     }
 }
