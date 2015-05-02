@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -20,6 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 import edu.csuchico.facematchroster.model.Student;
@@ -32,45 +34,18 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
     private static final String TAG = makeLogTag(StudentLogin.class);
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
-    private EditText mName;
-    private EditText mMnemonic;
-    private EditText mSchool;
-    private EditText mEmail;
-    private EditText mId;
-    private Button mSubmitButton;
-    private ImageView mImageView;
-
-    private View.OnClickListener mImageViewListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            dispatchGetPictureIntent();
-        }
-    };
-
-    private View.OnClickListener mSubmitButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            save();
-        }
-    };
+    @InjectView(R.id.nameForm) EditText mName;
+    @InjectView(R.id.mnemonicForm) EditText mMnemonic;
+    @InjectView(R.id.schoolForm) EditText mSchool;
+    @InjectView(R.id.emaiForm) EditText mEmail;
+    @InjectView(R.id.idForm) EditText mId;
+    @InjectView(R.id.imageView) ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_loggin);
-
-        mName = (EditText) findViewById(R.id.nameForm);
-        mMnemonic = (EditText) findViewById(R.id.mnemonicForm);
-        mSchool = (EditText) findViewById(R.id.schoolForm);
-        mEmail = (EditText) findViewById(R.id.emaiForm);
-        mId = (EditText) findViewById(R.id.idForm);
-        mSubmitButton = (Button) findViewById(R.id.submitButton);
-        mImageView = (ImageView) findViewById(R.id.imageView);
-
-        mSubmitButton.setOnClickListener(mSubmitButtonListener);
-        mImageView.setOnClickListener(mImageViewListener);
-        
+        ButterKnife.inject(this);
     }
 
     @Override
@@ -108,7 +83,8 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
     /**
      * source: http://stackoverflow.com/questions/4455558/allow-user-to-select-camera-or-gallery-for-image/
      */
-    private void dispatchGetPictureIntent() {
+    @OnClick(R.id.imageView)
+    public void dispatchGetPictureIntent() {
         // Camera intent
         final List<Intent> cameraIntents = new ArrayList<Intent>();
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -144,7 +120,8 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
                 slide(StudentLogin.this, ActivityTransitionAnimation.RIGHT);
     }
 
-    protected void save() {
+    @OnClick(R.id.submitButton)
+    public void save() {
         final MaterialDialog materialDialog =
                 new MaterialDialog.Builder(StudentLogin.this)
                         .title("Signing in...")
