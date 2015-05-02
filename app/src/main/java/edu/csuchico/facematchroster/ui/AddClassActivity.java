@@ -87,9 +87,10 @@ public class AddClassActivity extends BaseActivity implements SaveToCognitoHelpe
     @Override
     public void saveToCognitoResult(boolean result) {
         if (result == true) {
-            Toast.makeText(AddClassActivity.this, "Saved", Toast.LENGTH_LONG).show();
+            LOGD(TAG, "saved");
+            finish();
         } else {
-            Toast.makeText(AddClassActivity.this, "Not saved", Toast.LENGTH_LONG).show();
+            Toast.makeText(AddClassActivity.this, "Can't save", Toast.LENGTH_LONG).show();
         }
     }
 }
