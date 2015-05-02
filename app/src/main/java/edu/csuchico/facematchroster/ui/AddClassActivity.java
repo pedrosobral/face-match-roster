@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 import edu.csuchico.facematchroster.model.ClassModel;
@@ -19,26 +21,22 @@ public class AddClassActivity extends BaseActivity implements SaveToCognitoHelpe
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
-    private EditText mClassName;
-    private EditText mClassNumber;
-    private EditText mClassSection;
-    private Spinner mSpinner;
+    @InjectView(R.id.name_class) EditText mClassName;
+    @InjectView(R.id.class_number) EditText mClassNumber;
+    @InjectView(R.id.class_section) EditText mClassSection;
+    @InjectView(R.id.school_term_spinner) Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
 
-        mClassName = (EditText) findViewById(R.id.name_class);
-        mClassNumber = (EditText) findViewById(R.id.class_number);
-        mClassSection = (EditText) findViewById(R.id.class_section);
+        ButterKnife.inject(this);
 
         setupSpinner();
     }
 
     private void setupSpinner() {
-        mSpinner = (Spinner) findViewById(R.id.school_term_spinner);
-
         // TODO: must be generated automatically
         String[] schoolTermList = new String[]{"Spring 2015", "Fall 2015", "Summer 2015"};
 
