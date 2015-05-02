@@ -36,8 +36,8 @@ public class SaveToCognitoTask extends AsyncTask<Object, Integer, Boolean> {
         return new SaveToCognitoTask(mContext, mDialog, mResult);
     }
 
-    public static SaveToCognitoTask saveToCognitoWithoutDialog(Context mContext) {
-        return new SaveToCognitoTask(mContext, null, null);
+    public static SaveToCognitoTask saveToCognitoWithoutDialog(Context mContext, OnCognitoResult mResult) {
+        return new SaveToCognitoTask(mContext, null, mResult);
     }
 
     public interface OnCognitoResult {
