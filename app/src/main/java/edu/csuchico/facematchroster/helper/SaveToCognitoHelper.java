@@ -18,26 +18,26 @@ import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 /**
  * Created by Pedro Henrique on 5/1/15 - 7:26 PM.
  */
-public class SaveToCognitoTask extends AsyncTask<Object, Integer, Boolean> {
+public class SaveToCognitoHelper extends AsyncTask<Object, Integer, Boolean> {
 
-    private static final String TAG = makeLogTag(SaveToCognitoTask.class);
+    private static final String TAG = makeLogTag(SaveToCognitoHelper.class);
 
     private Context mContext;
     private MaterialDialog mDialog;
     private OnCognitoResult mResult;
 
-    private SaveToCognitoTask(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
+    private SaveToCognitoHelper(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
         this.mContext = mContext;
         this.mDialog = mDialog;
         this.mResult = mResult;
     }
 
-    public static SaveToCognitoTask saveToCognitoWithDialog(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
-        return new SaveToCognitoTask(mContext, mDialog, mResult);
+    public static SaveToCognitoHelper saveToCognitoWithDialog(Context mContext, MaterialDialog mDialog, OnCognitoResult mResult) {
+        return new SaveToCognitoHelper(mContext, mDialog, mResult);
     }
 
-    public static SaveToCognitoTask saveToCognitoWithoutDialog(Context mContext, OnCognitoResult mResult) {
-        return new SaveToCognitoTask(mContext, null, mResult);
+    public static SaveToCognitoHelper saveToCognitoWithoutDialog(Context mContext, OnCognitoResult mResult) {
+        return new SaveToCognitoHelper(mContext, null, mResult);
     }
 
     public interface OnCognitoResult {

@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
-import edu.csuchico.facematchroster.helper.SaveToCognitoTask;
+import edu.csuchico.facematchroster.helper.SaveToCognitoHelper;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class StudentLogin extends BaseActivity implements SaveToCognitoTask.OnCognitoResult {
+public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(StudentLogin.class);
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
@@ -152,7 +152,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoTask.OnCo
                         .content("Your phone is contacting our servers")
                         .progress(true, 0).build();
 
-        SaveToCognitoTask saveToCognitoTask = SaveToCognitoTask.
+        SaveToCognitoHelper saveToCognitoHelper = SaveToCognitoHelper.
                 saveToCognitoWithDialog(StudentLogin.this, materialDialog, StudentLogin.this);
 
         Student student = new Student();
@@ -163,7 +163,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoTask.OnCo
         student.setMnemonic(mMnemonic.getText().toString());
         student.setSchoolName(mSchool.getText().toString());
 
-        saveToCognitoTask.execute(student);
+        saveToCognitoHelper.execute(student);
     }
 
     @Override
