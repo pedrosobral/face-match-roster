@@ -6,34 +6,29 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.helper.SaveToCognitoTask;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class StudentLogin extends BaseActivity {
+public class StudentLogin extends BaseActivity implements SaveToCognitoTask.OnCognitoResult {
     private static final String TAG = makeLogTag(StudentLogin.class);
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
@@ -55,7 +50,7 @@ public class StudentLogin extends BaseActivity {
     private View.OnClickListener mSubmitButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            new saveStudentToCognitoTask().execute();
+            save();
         }
     };
 
@@ -75,10 +70,7 @@ public class StudentLogin extends BaseActivity {
 
         mSubmitButton.setOnClickListener(mSubmitButtonListener);
         mImageView.setOnClickListener(mImageViewListener);
-
-        //hack for debugging only, do not use in prod
-        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
+        
     }
 
     @Override
@@ -152,95 +144,57 @@ public class StudentLogin extends BaseActivity {
                 slide(StudentLogin.this, ActivityTransitionAnimation.RIGHT);
     }
 
-    private class saveStudentToCognitoTask extends AsyncTask<Void, Void, Void> {
-
+    protected void save() {
         final MaterialDialog materialDialog =
                 new MaterialDialog.Builder(StudentLogin.this)
                         .title("Signing in...")
                         .cancelable(false)
                         .content("Your phone is contacting our servers")
                         .progress(true, 0).build();
-        private boolean mDownloadError = false;
 
-        @Override
-        protected void onPreExecute() {
-            materialDialog.show();
-        }
+        SaveToCognitoTask saveToCognitoTask = SaveToCognitoTask.
+                saveToCognitoWithDialog(StudentLogin.this, materialDialog, StudentLogin.this);
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                //TODO: use mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
-                // to make table name dynamic(get from input/email/consistent as table name stays same in db)
-                //TODO: error checking for inputs
-                //TODO: post success or failure of upload
+        Student student = new Student();
+        student.setUserid(mId.getText().toString());
+        student.setTimestamp(System.currentTimeMillis());
+        student.setName(mName.getText().toString());
+        student.setEmail(mEmail.getText().toString());
+        student.setMnemonic(mMnemonic.getText().toString());
+        student.setSchoolName(mSchool.getText().toString());
 
-                //Initialize the Amazon Cognito credentials provider
-                CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                        getApplicationContext(), // Context
-                        "us-east-1:bd3ecd92-f22f-4dc0-a0b5-bcc79294044b", // Identity Pool ID
-                        Regions.US_EAST_1 // Region
-                );
-                Log.d("LogTag", "my ID is " + credentialsProvider.getIdentityId());
+        saveToCognitoTask.execute(student);
+    }
 
-                AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-                DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
+    @Override
+    public void saveToCognitoResult(boolean result) {
+        if (result == false) {
+            new MaterialDialog.Builder(StudentLogin.this)
+                    .title("Signing in...")
+                    .content("Can't connect")
+                    .positiveText("OK")
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        } else {
+            new MaterialDialog.Builder(StudentLogin.this)
+                    .title("Hello " + mName.getText().toString())
+                    .content("Welcome to FaceMatch Roster")
+                    .positiveText("Next")
+                    .cancelable(false)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            dialog.dismiss();
+                            finish();
 
-                Student student = new Student();
-                student.setUserid(mId.getText().toString());
-                student.setTimestamp(System.currentTimeMillis());
-                student.setName(mName.getText().toString());
-                student.setEmail(mEmail.getText().toString());
-                student.setMnemonic(mMnemonic.getText().toString());
-                student.setSchoolName(mSchool.getText().toString());
-                //student.setS3PicLoc();
-                Log.d("StudentLogin", "Student Class populated");
-
-                //TODO: query table to see if user exists already
-                //TODO: if user exists ask if he wants to update
-                mapper.save(student);
-                //this should be used
-                //mapper.save(student, new DynamoDBMapperConfig(new TableNameOverride(tableName)));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                mDownloadError = true;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-
-            materialDialog.dismiss();
-
-            if (mDownloadError) {
-                new MaterialDialog.Builder(StudentLogin.this)
-                        .title("Signing in...")
-                        .content("Can't connect")
-                        .positiveText("OK")
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-            } else {
-                new MaterialDialog.Builder(StudentLogin.this)
-                        .title("Hello " + mName.getText().toString())
-                        .content("Welcome to FaceMatch Roster")
-                        .positiveText("Next")
-                        .cancelable(false)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.dismiss();
-                                finish();
-
-                            }
-                        })
-                        .show();
-            }
+                        }
+                    })
+                    .show();
         }
     }
 }
