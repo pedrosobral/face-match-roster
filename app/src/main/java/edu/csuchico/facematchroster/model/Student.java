@@ -20,15 +20,6 @@ public class Student {
     private String schoolName;
     private String s3PicLoc;
 
-    @DynamoDBIndexRangeKey(attributeName = "unx_timestamp")
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
     @DynamoDBHashKey(attributeName = "school_userid")
     public String getUserid() {
         return userid;
@@ -38,7 +29,16 @@ public class Student {
         this.userid = userid;
     }
 
-    @DynamoDBIndexRangeKey(attributeName = "name")
+    @DynamoDBAttribute(attributeName = "unx_timestamp")
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
