@@ -5,6 +5,7 @@
     tools:context="edu.csuchico.facematchroster.LoginActivity">
 
     <LinearLayout
+        android:id="@+id/dialog_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
