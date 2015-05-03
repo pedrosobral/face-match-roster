@@ -54,9 +54,20 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
 
     // Auth scopes we need
     public static final String AUTH_SCOPES[] = {
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email"};
+            "profile",
+            "email"};
+    // Request codes for the UIs that we show
+    public static final int REQUEST_AUTHENTICATE = 100;
     static final String AUTH_TOKEN_TYPE;
+    private static final int REQUEST_RECOVER_FROM_AUTH_ERROR = 101;
+    private static final int REQUEST_RECOVER_FROM_PLAY_SERVICES_ERROR = 102;
+    private static final int REQUEST_PLAY_SERVICES_ERROR_DIALOG = 103;
+    private static final String TAG = makeLogTag(LoginAndAuthHelper.class);
+    // Controls whether or not we can show sign-in UI. Starts as true;
+    // when sign-in *fails*, we will show the UI only once and set this flag to false.
+    // After that, we don't attempt again in order not to annoy the user.
+    private static boolean sCanShowSignInUi = true;
+    private static boolean sCanShowAuthUi = true;
 
     static {
         StringBuilder sb = new StringBuilder();
@@ -68,17 +79,6 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
         AUTH_TOKEN_TYPE = sb.toString();
     }
 
-    // Request codes for the UIs that we show
-    private static final int REQUEST_AUTHENTICATE = 100;
-    private static final int REQUEST_RECOVER_FROM_AUTH_ERROR = 101;
-    private static final int REQUEST_RECOVER_FROM_PLAY_SERVICES_ERROR = 102;
-    private static final int REQUEST_PLAY_SERVICES_ERROR_DIALOG = 103;
-    private static final String TAG = makeLogTag(LoginAndAuthHelper.class);
-    // Controls whether or not we can show sign-in UI. Starts as true;
-    // when sign-in *fails*, we will show the UI only once and set this flag to false.
-    // After that, we don't attempt again in order not to annoy the user.
-    private static boolean sCanShowSignInUi = true;
-    private static boolean sCanShowAuthUi = true;
     Context mAppContext;
     // The Activity this object is bound to (we use a weak ref to avoid context leaks)
     WeakReference<Activity> mActivityRef;
@@ -194,8 +194,9 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
         if (!AccountUtils.hasPlusInfo(activity, mAccountName)) {
             LOGD(TAG, "We don't have Google+ info for " + mAccountName + " yet, so loading.");
             Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-//            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
-//            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
+            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
+            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
+
         } else {
             LOGD(TAG, "No need for Name info, we already have it.");
         }
