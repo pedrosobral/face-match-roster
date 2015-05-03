@@ -53,6 +53,22 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
     public void onLoginStudent() {
         LOGD(TAG, "Login Student");
         hideDialogInstructorStudentLayout();
+
+        new MaterialDialog.Builder(LoginActivity.this)
+                .title("Hello " + AccountUtils.getPlusName(this))
+                .content("Welcome to FaceMatch Roster")
+                .positiveText("Next")
+                .cancelable(false)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
+                        startActivity(new Intent(LoginActivity.this, StudentLogin.class));
+                        finish();
+
+                    }
+                })
+                .show();
     }
 
     @Override
