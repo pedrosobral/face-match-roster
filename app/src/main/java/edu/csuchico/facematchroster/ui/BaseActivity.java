@@ -95,6 +95,20 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
     };
     private Toolbar mActionBarToolbar;
 
+    private Intent mSignInIntent;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LOGD(TAG, "OnActivityResult");
+
+        if (requestCode == LoginAndAuthHelper.REQUEST_AUTHENTICATE)
+            if (resultCode != RESULT_OK)
+                mSignInIntent = null;
+
+        if (mLoginAndAuthHelper != null)
+            mLoginAndAuthHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -148,6 +162,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
                 .setPositiveButton(R.string.add_account, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         promptAddAccount();
                     }
                 })
@@ -161,10 +176,9 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
     }
 
     private void promptAddAccount() {
-        Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-        intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[]{"com.google"});
-        startActivity(intent);
-        finish();
+        mSignInIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+        mSignInIntent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[]{"com.google"});
+        startActivityForResult(mSignInIntent, LoginAndAuthHelper.REQUEST_AUTHENTICATE);
     }
 
     private void startLoginProcess() {
@@ -173,7 +187,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         if (!AccountUtils.hasActiveAccount(this)) {
             LOGD(TAG, "No active account, attempting to pick a default.");
             String defaultAccount = getDefaultAccount();
-            if (defaultAccount == null) {
+            if (mSignInIntent == null && defaultAccount == null) {
                 LOGE(TAG, "Failed to pick default account (no accounts). Failing.");
                 complainMustHaveGoogleAccount();
                 return;
