@@ -10,6 +10,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import edu.csuchico.facematchroster.model.ClassModel;
+import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.model.Student;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
@@ -102,6 +103,8 @@ public class SaveToCognitoHelper extends AsyncTask<Object, Integer, Boolean> {
             model = ((ClassModel) objects[0]);
         } else if (objects[0] instanceof Student) {
             model = ((Student) objects[0]);
+        } else if (objects[0] instanceof Instructor) {
+            model = (Instructor) objects[0];
         }
 
         return model;
