@@ -1,11 +1,13 @@
 package edu.csuchico.facematchroster.ui;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -17,8 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
+import com.amazonaws.regions.Regions;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +39,8 @@ import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 
+import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
+import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.OnCognitoResult {
@@ -50,6 +60,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
     LinearLayout mLinearLayoutPhoto;
     @InjectView(R.id.linearLayout_school)
     LinearLayout mLinearLayoutSchool;
+    private Bitmap mImageBitmap;
 
     /**
      * source: http://stackoverflow.com/questions/4455558/allow-user-to-select-camera-or-gallery-for-image/
@@ -88,6 +99,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
     public void save() {
 
         if (sIsButtonNext) {        // call next form (e.g school form)
+            uploadPhoto();          // save photo
             mLinearLayoutPhoto.setVisibility(View.GONE);
             mLinearLayoutSchool.setVisibility(View.VISIBLE);
             mSubmitButton.setText("Done");
@@ -104,7 +116,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
                     saveToCognitoWithDialog(StudentLogin.this, materialDialog, StudentLogin.this);
 
             Student student = new Student();
-            student.setUserid("1");
+            student.setUserid("2");
             student.setTimestamp(System.currentTimeMillis());
             student.setName(AccountUtils.getPlusName(StudentLogin.this));
             student.setEmail(AccountUtils.getActiveAccountName(StudentLogin.this));
@@ -152,6 +164,8 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_loggin);
         ButterKnife.inject(this);
+
+        sIsButtonNext = true;
     }
 
     @Override
@@ -161,8 +175,8 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
             Uri uri = data.getData();
             if (uri != null) { // from gallery
                 try {
-                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    mImageView.setImageBitmap(imageBitmap);
+                    mImageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    mImageView.setImageBitmap(mImageBitmap);
                     mEditImageView.setVisibility(View.VISIBLE);
                     mSubmitButton.setVisibility(View.VISIBLE);
                 } catch (IOException e) {
@@ -171,13 +185,82 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
             } else { // from camera
                 Bundle extras = data.getExtras();
                 if (extras != null) {
-                    Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-                    mImageView.setImageBitmap(imageBitmap);
+                    mImageBitmap = (Bitmap) data.getExtras().get("data");
+                    mImageView.setImageBitmap(mImageBitmap);
                     mEditImageView.setVisibility(View.VISIBLE);
                     mSubmitButton.setVisibility(View.VISIBLE);
                 }
             }
         }
+    }
+
+    /**
+     * source modified: stackoverflow.com/questions/15428975/save-bitmap-into-file-and-return-file-having-bitmap-image
+     * @param filename
+     * @return File
+     */
+    private File bitmapToFile(String filename) {
+        final FileOutputStream outStream;
+
+        File file = null;
+        try {
+            file = getTempFile(this, filename);
+            LOGD(TAG, file.getAbsolutePath());
+            outStream = new FileOutputStream(file.getAbsolutePath());
+
+            if (outStream != null) {
+                if (mImageBitmap != null) {
+                    mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                }
+            }
+            outStream.flush();
+            outStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    /**
+     * source: developer.android.com/training/basics/data-storage/files.html
+     * @param context
+     * @param url
+     * @return File
+     */
+    public File getTempFile(Context context, String url) {
+        File file = null;
+        try {
+            final String fileName = Uri.parse(url).getLastPathSegment();
+            file = File.createTempFile(fileName, ".jpg", context.getCacheDir());
+        } catch (IOException e) {
+            LOGE(TAG, e.toString());
+        }
+        return file;
+    }
+
+    private void uploadPhoto() {
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                StudentLogin.this, // Context
+                "us-east-1:bd3ecd92-f22f-4dc0-a0b5-bcc79294044b", // Identity Pool ID
+                Regions.US_EAST_1 // Region
+        );
+
+        final TransferManager transferManager = new TransferManager(credentialsProvider);
+
+        final String bucketName = "allschools";//"allschools";
+        final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+        final String imageFileName = "JPEG_" + timeStamp + "_";
+        final File file = bitmapToFile(imageFileName);
+
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Void doInBackground(Object... objects) {
+                transferManager.upload(bucketName, "csuchico/" + imageFileName, file);
+                return null;
+            }
+        };
+        task.execute();
+
     }
 
     @Override
