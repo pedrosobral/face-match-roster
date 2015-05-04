@@ -79,8 +79,17 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.inject(this);
+
+        /**
+         * Only show the login activity once
+         */
+        if (!AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
+            setContentView(R.layout.activity_login);
+            ButterKnife.inject(this);
+        } else {
+            startActivity(new Intent(this, ClassesActivity.class));
+            finish();
+        }
     }
 
     private void hideDialogInstructorStudentLayout() {
