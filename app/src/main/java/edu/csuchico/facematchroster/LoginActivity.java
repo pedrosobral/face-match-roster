@@ -59,8 +59,14 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
         LOGD(TAG, "Login Student");
         hideDialogInstructorStudentLayout();
 
+        // TODO: sometimes the login process return null
+        String userName = AccountUtils.getPlusName(LoginActivity.this);
+        if (userName == null) {
+            userName = "";
+        }
+
         new MaterialDialog.Builder(LoginActivity.this)
-                .title("Hello " + AccountUtils.getPlusName(this))
+                .title("Hello " + userName)
                 .content("We are almost done. We just need a few more information")
                 .positiveText("Next")
                 .cancelable(false)
@@ -70,7 +76,6 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
                         dialog.dismiss();
                         startActivity(new Intent(LoginActivity.this, StudentLogin.class));
                         finish();
-
                     }
                 })
                 .show();
@@ -111,8 +116,13 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
                     })
                     .show();
         } else {
+            // TODO: sometimes the login process return null
+            String userName = AccountUtils.getPlusName(LoginActivity.this);
+            if (userName == null) {
+                userName = "";
+            }
             new MaterialDialog.Builder(LoginActivity.this)
-                    .title("Hello " + AccountUtils.getPlusName(this))
+                    .title("Hello " + userName)
                     .content("Welcome to FaceMatch Roster")
                     .positiveText("Next")
                     .cancelable(false)

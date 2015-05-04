@@ -306,7 +306,7 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 LOGD(TAG, "User explicitly cancelled sign-in/auth flow.");
                 // save this as a preference so we don't annoy the user again
-                PrefUtils.markUserRefusedSignIn(mAppContext);
+//                PrefUtils.markUserRefusedSignIn(mAppContext);
             } else {
                 LOGW(TAG, "Failed to recover from a login/auth failure, resultCode=" + resultCode);
             }
