@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster;
+package edu.csuchico.facematchroster.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
-import edu.csuchico.facematchroster.ui.BaseActivity;
-import edu.csuchico.facematchroster.ui.ClassesActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 

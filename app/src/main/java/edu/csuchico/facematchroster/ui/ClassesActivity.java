@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
-import edu.csuchico.facematchroster.StudentLogin;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Deck;
 
