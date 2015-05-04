@@ -64,6 +64,7 @@ public class AccountUtils {
     private static final String PREFIX_PREF_AUTH_TOKEN = "auth_token_";
     private static final String PREFIX_PREF_PLUS_PROFILE_ID = "plus_profile_id_";
     private static final String PREFIX_PREF_PLUS_NAME = "plus_name_";
+    private static final String PREFIX_PREF_PHOTO_FILENAME = "photo_filename_";
 
     private static SharedPreferences getSharedPreferences(final Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -76,6 +77,18 @@ public class AccountUtils {
     public static String getActiveAccountName(final Context context) {
         SharedPreferences sp = getSharedPreferences(context);
         return sp.getString(PREF_ACTIVE_ACCOUNT, null);
+    }
+
+    public static String getPhotoFileName(final Context context) {
+        SharedPreferences sp = getSharedPreferences(context);
+        return sp.getString(PREFIX_PREF_PHOTO_FILENAME, null);
+    }
+
+    public static boolean setPhotoFileName(final Context context, final String filename) {
+        LOGD(TAG, "Set photo filename: " + filename);
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putString(PREFIX_PREF_PHOTO_FILENAME, filename).commit();
+        return true;
     }
 
     public static Account getActiveAccount(final Context context) {

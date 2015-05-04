@@ -19,9 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.regions.Regions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +35,7 @@ import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.util.AccountUtils;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
@@ -196,6 +195,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
 
     /**
      * source modified: stackoverflow.com/questions/15428975/save-bitmap-into-file-and-return-file-having-bitmap-image
+     *
      * @param filename
      * @return File
      */
@@ -223,6 +223,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
 
     /**
      * source: developer.android.com/training/basics/data-storage/files.html
+     *
      * @param context
      * @param url
      * @return File
@@ -239,17 +240,10 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
     }
 
     private void uploadPhoto() {
-        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                StudentLogin.this, // Context
-                "us-east-1:bd3ecd92-f22f-4dc0-a0b5-bcc79294044b", // Identity Pool ID
-                Regions.US_EAST_1 // Region
-        );
+        final TransferManager transferManager = AmazonAwsUtils.getTransferManager(this);
 
-        final TransferManager transferManager = new TransferManager(credentialsProvider);
-
-        final String bucketName = "allschools";//"allschools";
-        final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-        final String imageFileName = "JPEG_" + timeStamp + "_";
+        final String bucketName = AmazonAwsUtils.BUCKET_NAME;
+        final String imageFileName = getImageFileName();
         final File file = bitmapToFile(imageFileName);
 
         AsyncTask task = new AsyncTask() {
@@ -260,7 +254,17 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
             }
         };
         task.execute();
+    }
 
+    private String getImageFileName() {
+        final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+
+        final String filename = AccountUtils.getActiveAccountName(this) + "_" + timeStamp + "_";
+
+        // save photo filename
+        AccountUtils.setPhotoFileName(this, filename);
+
+        return filename;
     }
 
     @Override
