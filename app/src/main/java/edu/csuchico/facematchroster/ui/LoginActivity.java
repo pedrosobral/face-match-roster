@@ -13,12 +13,12 @@ import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.util.AccountUtils;
-import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.OnCognitoResult {
+public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(LoginActivity.class);
 
     @InjectView(R.id.dialog_layout)
@@ -41,7 +41,7 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
                         .content("Your phone is contacting our servers")
                         .progress(true, 0).build();
 
-        SaveToCognitoHelper saveToCognitoHelper = SaveToCognitoHelper.
+        AmazonAwsUtils.SaveToCognitoHelper saveToCognitoHelper = AmazonAwsUtils.SaveToCognitoHelper.
                 saveToCognitoWithDialog(LoginActivity.this, materialDialog, LoginActivity.this);
 
         Instructor instructor = new Instructor(

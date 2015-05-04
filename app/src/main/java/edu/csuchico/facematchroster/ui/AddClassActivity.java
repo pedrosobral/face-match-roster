@@ -11,13 +11,13 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
-import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 import edu.csuchico.facematchroster.model.ClassModel;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class AddClassActivity extends BaseActivity implements SaveToCognitoHelper.OnCognitoResult {
+public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
@@ -77,7 +77,8 @@ public class AddClassActivity extends BaseActivity implements SaveToCognitoHelpe
                 mClassNumber.getText().toString(), mClassSection.getText().toString(),
                 mSpinner.getSelectedItem().toString(), "CSU Chico");
 
-        SaveToCognitoHelper
+        AmazonAwsUtils
+                .SaveToCognitoHelper
                 .saveToCognitoWithoutDialog(AddClassActivity.this, AddClassActivity.this)
                 .execute(newClass);
     }

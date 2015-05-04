@@ -36,13 +36,12 @@ import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
-import edu.csuchico.facematchroster.util.SaveToCognitoHelper;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.OnCognitoResult {
+public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(StudentLogin.class);
 
     private static final int REQUEST_IMAGE_GALLERY = 1;
@@ -111,7 +110,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
                             .content("Your phone is contacting our servers")
                             .progress(true, 0).build();
 
-            SaveToCognitoHelper saveToCognitoHelper = SaveToCognitoHelper.
+            AmazonAwsUtils.SaveToCognitoHelper saveToCognitoHelper = AmazonAwsUtils.SaveToCognitoHelper.
                     saveToCognitoWithDialog(StudentLogin.this, materialDialog, StudentLogin.this);
 
             Student student = new Student();
