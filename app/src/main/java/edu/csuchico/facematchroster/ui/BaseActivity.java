@@ -99,7 +99,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        LOGD(TAG, "OnActivityResult");
+        LOGD(TAG, "OnActivityResult" + requestCode);
 
         if (requestCode == LoginAndAuthHelper.REQUEST_AUTHENTICATE)
             if (resultCode != RESULT_OK)

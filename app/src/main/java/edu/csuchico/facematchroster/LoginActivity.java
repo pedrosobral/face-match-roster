@@ -25,6 +25,11 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
 
+    @Override
+    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
+        super.onAuthSuccess(accountName, newlyAuthenticated);
+    }
+
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
         LOGD(TAG, "Login Instructor");
@@ -56,7 +61,7 @@ public class LoginActivity extends BaseActivity implements SaveToCognitoHelper.O
 
         new MaterialDialog.Builder(LoginActivity.this)
                 .title("Hello " + AccountUtils.getPlusName(this))
-                .content("Welcome to FaceMatch Roster")
+                .content("We are almost done. We just need a few more information")
                 .positiveText("Next")
                 .cancelable(false)
                 .callback(new MaterialDialog.ButtonCallback() {
