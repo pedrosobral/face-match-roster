@@ -346,10 +346,9 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
     @Override
     public void onAuthFailure(String accountName) {
         LOGD(TAG, "Auth failed for account " + accountName);
-    }
-
-    protected void retryAuth() {
-        mLoginAndAuthHelper.retryAuthByUserRequest();
+        if (mLoginAndAuthHelper != null) {
+            mLoginAndAuthHelper.retryAuthByUserRequest();
+        }
     }
 
     public static class NavDrawerItemAdapter extends ArrayAdapter<String> {
