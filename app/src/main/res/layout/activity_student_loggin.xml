@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,61 +10,75 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.csuchico.facematchroster.StudentLogin">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/profile_default"
-        app:border_color="#FF000000"
-        app:border_width="2dp" />
-
-    <TextView
-        android:id="@+id/editImageView"
+    <LinearLayout
+        android:id="@+id/linearLayout_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="edit"
-        android:textColor="#03A9F4"
-        android:visibility="gone" />
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:visibility="visible">
 
-    <EditText
-        android:id="@+id/nameForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="40dp"
+            android:text="Please, provide a photo of you \n and your instructor can know your name"
+            android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/mnemonicForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mnemonic" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/profile_default"
+            app:border_color="#FF000000"
+            app:border_width="2dp" />
 
-    <EditText
-        android:id="@+id/schoolForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="School" />
+        <TextView
+            android:id="@+id/editImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="edit"
+            android:textColor="#03A9F4"
+            android:visibility="gone" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/idForm"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/linearLayout_school"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="ID" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <EditText
-        android:id="@+id/emaiForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="40dp"
+            android:text="What's your school name?"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/schoolForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CSU Chico"
+            android:editable="false" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Submit" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:visibility="invisible"
+        android:text="Next" />
 
-
-</LinearLayout>
+</RelativeLayout>
