@@ -120,6 +120,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
             student.setName(AccountUtils.getPlusName(StudentLogin.this));
             student.setEmail(AccountUtils.getActiveAccountName(StudentLogin.this));
             student.setSchoolName(mSchool.getText().toString());
+            student.setS3PicLoc(AmazonAwsUtils.getS3PhotoLink(this));
 
             saveToCognitoHelper.execute(student);
         }
@@ -243,13 +244,16 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
         final TransferManager transferManager = AmazonAwsUtils.getTransferManager(this);
 
         final String bucketName = AmazonAwsUtils.BUCKET_NAME;
+
         final String imageFileName = getImageFileName();
+        final String key = AmazonAwsUtils.SCHOOL_NAME_FOLDER + imageFileName;
+
         final File file = bitmapToFile(imageFileName);
 
         AsyncTask task = new AsyncTask() {
             @Override
             protected Void doInBackground(Object... objects) {
-                transferManager.upload(bucketName, "csuchico/" + imageFileName, file);
+                transferManager.upload(bucketName, key, file);
                 return null;
             }
         };
@@ -262,7 +266,7 @@ public class StudentLogin extends BaseActivity implements SaveToCognitoHelper.On
         final String filename = AccountUtils.getActiveAccountName(this) + "_" + timeStamp + "_";
 
         // save photo filename
-        AccountUtils.setPhotoFileName(this, filename);
+        AmazonAwsUtils.setPhotoFileName(this, filename);
 
         return filename;
     }

@@ -58,13 +58,11 @@ public class AccountUtils {
         AUTH_TOKEN_TYPE = sb.toString();
     }
 
-    private static final String TAG = makeLogTag(AccountUtils.class);
     private static final String PREF_ACTIVE_ACCOUNT = "chosen_account";
     // these names are are prefixes; the account is appended to them
     private static final String PREFIX_PREF_AUTH_TOKEN = "auth_token_";
     private static final String PREFIX_PREF_PLUS_PROFILE_ID = "plus_profile_id_";
     private static final String PREFIX_PREF_PLUS_NAME = "plus_name_";
-    private static final String PREFIX_PREF_PHOTO_FILENAME = "photo_filename_";
 
     private static SharedPreferences getSharedPreferences(final Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
@@ -79,18 +77,6 @@ public class AccountUtils {
         return sp.getString(PREF_ACTIVE_ACCOUNT, null);
     }
 
-    public static String getPhotoFileName(final Context context) {
-        SharedPreferences sp = getSharedPreferences(context);
-        return sp.getString(PREFIX_PREF_PHOTO_FILENAME, null);
-    }
-
-    public static boolean setPhotoFileName(final Context context, final String filename) {
-        LOGD(TAG, "Set photo filename: " + filename);
-        SharedPreferences sp = getSharedPreferences(context);
-        sp.edit().putString(PREFIX_PREF_PHOTO_FILENAME, filename).commit();
-        return true;
-    }
-
     public static Account getActiveAccount(final Context context) {
         String account = getActiveAccountName(context);
         if (account != null) {
@@ -101,7 +87,7 @@ public class AccountUtils {
     }
 
     public static boolean setActiveAccount(final Context context, final String accountName) {
-        LOGD(TAG, "Set active account to: " + accountName);
+        LOGD(AmazonAwsUtils.TAG, "Set active account to: " + accountName);
         SharedPreferences sp = getSharedPreferences(context);
         sp.edit().putString(PREF_ACTIVE_ACCOUNT, accountName).commit();
         return true;
@@ -123,20 +109,20 @@ public class AccountUtils {
     }
 
     public static void setAuthToken(final Context context, final String accountName, final String authToken) {
-        LOGI(TAG, "Auth token of length "
+        LOGI(AmazonAwsUtils.TAG, "Auth token of length "
                 + (TextUtils.isEmpty(authToken) ? 0 : authToken.length()) + " for "
                 + accountName);
         SharedPreferences sp = getSharedPreferences(context);
         sp.edit().putString(makeAccountSpecificPrefKey(accountName, PREFIX_PREF_AUTH_TOKEN),
                 authToken).commit();
-        LOGV(TAG, "Auth Token: " + authToken);
+        LOGV(AmazonAwsUtils.TAG, "Auth Token: " + authToken);
     }
 
     public static void setAuthToken(final Context context, final String authToken) {
         if (hasActiveAccount(context)) {
             setAuthToken(context, getActiveAccountName(context), authToken);
         } else {
-            LOGE(TAG, "Can't set auth token because there is no chosen account!");
+            LOGE(AmazonAwsUtils.TAG, "Can't set auth token because there is no chosen account!");
         }
     }
 
@@ -190,22 +176,22 @@ public class AccountUtils {
         try {
             String accountName = getActiveAccountName(context);
             if (accountName != null) {
-                LOGI(TAG, "Requesting new auth token (with notification)");
+                LOGI(AmazonAwsUtils.TAG, "Requesting new auth token (with notification)");
                 final String token = GoogleAuthUtil.getTokenWithNotification(context, accountName, AUTH_TOKEN_TYPE,
                         null, syncAuthority, null);
                 setAuthToken(context, token);
             } else {
-                LOGE(TAG, "Can't try authentication because no account is chosen.");
+                LOGE(AmazonAwsUtils.TAG, "Can't try authentication because no account is chosen.");
             }
 
         } catch (UserRecoverableNotifiedException e) {
             // Notification has already been pushed.
-            LOGW(TAG, "User recoverable exception. Check notification.", e);
+            LOGW(AmazonAwsUtils.TAG, "User recoverable exception. Check notification.", e);
         } catch (GoogleAuthException e) {
             // This is likely unrecoverable.
-            LOGE(TAG, "Unrecoverable authentication exception: " + e.getMessage(), e);
+            LOGE(AmazonAwsUtils.TAG, "Unrecoverable authentication exception: " + e.getMessage(), e);
         } catch (IOException e) {
-            LOGE(TAG, "transient error encountered: " + e.getMessage());
+            LOGE(AmazonAwsUtils.TAG, "transient error encountered: " + e.getMessage());
         }
     }
 }
