@@ -8,25 +8,32 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
-import edu.csuchico.facematchroster.model.ClassModel;
 
-import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
 
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
-    @InjectView(R.id.name_class) EditText mClassName;
-    @InjectView(R.id.class_code) EditText mClassCode;
-    @InjectView(R.id.class_number) EditText mClassNumber;
-    @InjectView(R.id.class_section) EditText mClassSection;
-    @InjectView(R.id.school_term_spinner) Spinner mSpinner;
+    @InjectView(R.id.name_class)
+    EditText mClassName;
+    @InjectView(R.id.class_code)
+    EditText mClassCode;
+    @InjectView(R.id.class_number)
+    EditText mClassNumber;
+    @InjectView(R.id.class_section)
+    EditText mClassSection;
+    @InjectView(R.id.school_term_spinner)
+    Spinner mSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +91,25 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
                 System.currentTimeMillis()
         );
 
+        final MaterialDialog materialDialog =
+                new MaterialDialog.Builder(AddClassActivity.this)
+                        .title("Saving...")
+                        .cancelable(false)
+                        .content("Your phone is contacting our servers")
+                        .progress(true, 0).build();
+
         AmazonAwsUtils
                 .SaveToCognitoHelper
-                .saveToCognitoWithoutDialog(AddClassActivity.this, AddClassActivity.this)
+                .saveToCognitoWithDialog(AddClassActivity.this, materialDialog, AddClassActivity.this)
                 .execute(newClass);
     }
 
     @Override
     public void saveToCognitoResult(boolean result) {
         if (result == true) {
-            LOGD(TAG, "saved");
+            Toast.makeText(AddClassActivity.this, "Class saved", Toast.LENGTH_LONG).show();
             finish();
+            ActivityTransitionAnimation.slide(AddClassActivity.this, ActivityTransitionAnimation.LEFT);
         } else {
             Toast.makeText(AddClassActivity.this, "Can't save", Toast.LENGTH_LONG).show();
         }
