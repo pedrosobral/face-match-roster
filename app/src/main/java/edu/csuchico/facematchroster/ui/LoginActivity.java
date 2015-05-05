@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import edu.csuchico.facematchroster.Config;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.util.AccountUtils;
@@ -45,9 +46,8 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
                 saveToCognitoWithDialog(LoginActivity.this, materialDialog, LoginActivity.this);
 
         Instructor instructor = new Instructor(
-                "1", // id TODO: what's gonna be the id of instructor?
+                AccountUtils.getActiveAccountName(this), // email = id
                 AccountUtils.getPlusName(this), // name
-                AccountUtils.getActiveAccountName(this), // email
                 System.currentTimeMillis()); // timestamp
 
         saveToCognitoHelper.execute(instructor);
@@ -87,7 +87,7 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
         /**
          * Only show the login activity once
          */
-        if (!AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
+        if (Config.IS_DOGFOOD_BUILD || !AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
             setContentView(R.layout.activity_login);
             ButterKnife.inject(this);
         } else {
