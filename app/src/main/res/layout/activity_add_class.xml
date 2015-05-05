@@ -19,6 +19,13 @@
             android:layout_height="wrap_content" />
 
         <EditText
+            android:id="@+id/class_code"
+            android:hint="Code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+
+        <EditText
             android:id="@+id/class_number"
             android:hint="Number"
             android:layout_width="match_parent"

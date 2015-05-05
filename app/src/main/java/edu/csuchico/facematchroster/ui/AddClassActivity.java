@@ -11,6 +11,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 import edu.csuchico.facematchroster.model.ClassModel;
 
@@ -22,6 +23,7 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     private static final String TAG = makeLogTag(AddClassActivity.class);
 
     @InjectView(R.id.name_class) EditText mClassName;
+    @InjectView(R.id.class_code) EditText mClassCode;
     @InjectView(R.id.class_number) EditText mClassNumber;
     @InjectView(R.id.class_section) EditText mClassSection;
     @InjectView(R.id.school_term_spinner) Spinner mSpinner;
@@ -72,10 +74,15 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     }
 
     private void save() {
-        ClassModel newClass = new ClassModel("Bryan Dixon",
-                System.currentTimeMillis(), "bryan@csuchico.edu", mClassName.getText().toString(),
-                mClassNumber.getText().toString(), mClassSection.getText().toString(),
-                mSpinner.getSelectedItem().toString(), "CSU Chico");
+        ClassModel newClass = new ClassModel(
+                mClassCode.getText().toString(),
+                mClassName.getText().toString(),
+                AccountUtils.getActiveAccountName(this),
+                mClassNumber.getText().toString(),
+                mClassSection.getText().toString(),
+                mSpinner.getSelectedItem().toString(),
+                System.currentTimeMillis()
+        );
 
         AmazonAwsUtils
                 .SaveToCognitoHelper
