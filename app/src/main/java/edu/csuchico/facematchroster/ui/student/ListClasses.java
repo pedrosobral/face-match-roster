@@ -1,5 +1,6 @@
 package edu.csuchico.facematchroster.ui.student;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.BaseActivity;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
@@ -58,16 +66,36 @@ public class ListClasses extends BaseActivity {
     }
 
     private List<Deck> getData() {
-        // TODO: make up data just for test
+        List<Deck> list = new ArrayList<>();
+
+        // empty scan to get all classes
+        final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        final DynamoDBMapper mapper = AmazonAwsUtils.getDynamoDBMapper(this);
+
+        AsyncTask<Void, Void, List> task = new AsyncTask<Void, Void, List>() {
+            @Override
+            protected List doInBackground(Void... voids) {
+                return mapper.scan(ClassModel.class, scanExpression);
+            }
+        };
+
+        try {
+            list = task.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         List<Deck> listDeck = new ArrayList<>();
-        String[][] names = new String[][]{
-                {"Android Development", "567"},
-                {"Operating Systems", "340"},
-                {"Systems Programming", "540"},
-                {"Programming and Algorithms II", "211"},
-                {"Fundamental UNIX System Administration", "444"}};
-        for (int i = 0; i < 5; i++) {
-            listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
+        if (list != null) {
+            LOGD(TAG, "list != null - list.size: " + list.size());
+            Iterator it = list.iterator();
+            ClassModel classModel;
+            while (it.hasNext()) {
+                classModel = (ClassModel) it.next();
+                listDeck.add(new Deck(classModel.getNumber(), classModel.getName(), null, null, null));
+            }
         }
 
         return listDeck;
