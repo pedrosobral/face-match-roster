@@ -30,7 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.ClassModel;
-import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
@@ -45,13 +44,13 @@ public class ListClasses extends BaseActivity {
     @InjectView(R.id.swipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
 
-    private DeckAdapter mDeckAdapter;
+    private ClassAdapter mClassAdapter;
     private LinearLayoutManager mLinearLayoutManager;
 
-    private DeckAdapter.OnItemClickListener onItemClickListener = new DeckAdapter.OnItemClickListener() {
+    private ClassAdapter.OnItemClickListener onItemClickListener = new ClassAdapter.OnItemClickListener() {
         @Override
-        public void onItemClick(Deck deck) {
-            LOGD(TAG, "onItemClick: " + deck.getTitle());
+        public void onItemClick(ClassModel classModel) {
+            LOGD(TAG, "onItemClick: " + classModel.getName());
         }
 
         @Override
@@ -60,27 +59,25 @@ public class ListClasses extends BaseActivity {
         }
 
         @Override
-        public void onEnrollClick(View view, Deck deck) {
+        public void onEnrollClick(View view, ClassModel classModel) {
             ((Button) view).setText("Enrolled");
-            saveStudentOnClass(deck);
+            saveStudentOnClass(classModel);
         }
     };
-
-    private void saveStudentOnClass(Deck deck) {
-
-        
-
-    }
-
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             // update data and refresh
-            mDeckAdapter.updateData(getData());
+            mClassAdapter.updateData(getData());
             // dismiss swipeRefresh layout
             mSwipeRefresh.setRefreshing(false);
         }
     };
+
+    private void saveStudentOnClass(ClassModel deck) {
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +85,10 @@ public class ListClasses extends BaseActivity {
         setContentView(R.layout.activity_list_classes);
         ButterKnife.inject(this);
 
-        mDeckAdapter = new DeckAdapter(getData());
-        mDeckAdapter.setOnItemClickListener(onItemClickListener);
+        mClassAdapter = new ClassAdapter(getData());
+        mClassAdapter.setOnItemClickListener(onItemClickListener);
 
-        mRecyclerView.setAdapter(mDeckAdapter);
+        mRecyclerView.setAdapter(mClassAdapter);
         mLinearLayoutManager = new LinearLayoutManager(ListClasses.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -99,8 +96,8 @@ public class ListClasses extends BaseActivity {
         mSwipeRefresh.setOnRefreshListener(onRefreshListener);
     }
 
-    private List<Deck> getData() {
-        List<Deck> list = new ArrayList<>();
+    private List<ClassModel> getData() {
+        List<ClassModel> list = new ArrayList<>();
 
         // empty scan to get all classes
         final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
@@ -121,14 +118,14 @@ public class ListClasses extends BaseActivity {
             e.printStackTrace();
         }
 
-        List<Deck> listDeck = new ArrayList<>();
+        List<ClassModel> listDeck = new ArrayList<>();
         if (list != null) {
             LOGD(TAG, "list != null - list.size: " + list.size());
             Iterator it = list.iterator();
             ClassModel classModel;
             while (it.hasNext()) {
                 classModel = (ClassModel) it.next();
-                listDeck.add(new Deck(classModel.getNumber(), classModel.getName(), null, null, null));
+                listDeck.add(classModel);
             }
         }
 
@@ -159,16 +156,16 @@ public class ListClasses extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
+    public static class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> {
 
         private OnItemClickListener mOnItemClickListener;
-        private List<Deck> mDataModel = Collections.emptyList();
+        private List<ClassModel> mDataModel = Collections.emptyList();
 
-        public DeckAdapter(List<Deck> data) {
+        public ClassAdapter(List<ClassModel> data) {
             mDataModel = data;
         }
 
-        public void updateData(List<Deck> data) {
+        public void updateData(List<ClassModel> data) {
             mDataModel = data;
             notifyDataSetChanged();
         }
@@ -181,12 +178,12 @@ public class ListClasses extends BaseActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Deck deck = mDataModel.get(position);
+            ClassModel classModel = mDataModel.get(position);
 
-            holder.mTextView.setText(deck.getTitle());
-            holder.mIcon.setText(new Integer(deck.getId()).toString());
+            holder.mTextView.setText(classModel.getName());
+            holder.mIcon.setText(classModel.getNumber());
 
-            holder.onBind(deck);
+            holder.onBind(classModel);
         }
 
         @Override
@@ -199,11 +196,11 @@ public class ListClasses extends BaseActivity {
         }
 
         public interface OnItemClickListener {
-            void onItemClick(Deck deck);
+            void onItemClick(ClassModel classModel);
 
             void onIconClick(View view);
 
-            void onEnrollClick(View view, Deck deck);
+            void onEnrollClick(View view, ClassModel classModel);
         }
 
         // ViewHolder class to save inflated views for recycling
@@ -216,7 +213,7 @@ public class ListClasses extends BaseActivity {
             @InjectView(R.id.buttonEnroll)
             Button enrollButton;
 
-            private Deck mDeck;
+            private ClassModel mDeck;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -249,7 +246,7 @@ public class ListClasses extends BaseActivity {
                 });
             }
 
-            public void onBind(Deck deck) {
+            public void onBind(ClassModel deck) {
                 mDeck = deck;
             }
         }
