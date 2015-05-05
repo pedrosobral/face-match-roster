@@ -104,7 +104,7 @@ public class ClassesActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.action_settings: {
-
+                startActivity(new Intent(ClassesActivity.this, LoginActivity.class));
             }
             break;
             case R.id.debug: {
