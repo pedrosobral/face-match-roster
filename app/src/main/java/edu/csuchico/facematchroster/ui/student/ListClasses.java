@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -54,7 +55,17 @@ public class ListClasses extends BaseActivity {
         public void onIconClick(final View view) {
             LOGD(TAG, "onIconClick: " + ((TextView) view).getText());
         }
+
+        @Override
+        public void onEnrollClick(View view, Deck deck) {
+            ((Button) view).setText("Enrolled");
+            saveStudentOnClass(deck);
+        }
     };
+
+    private void saveStudentOnClass(Deck deck) {
+
+    }
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -159,7 +170,7 @@ public class ListClasses extends BaseActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.class_item, parent, false);
             return new ViewHolder(view);
         }
 
@@ -186,6 +197,8 @@ public class ListClasses extends BaseActivity {
             void onItemClick(Deck deck);
 
             void onIconClick(View view);
+
+            void onEnrollClick(View view, Deck deck);
         }
 
         // ViewHolder class to save inflated views for recycling
@@ -195,6 +208,9 @@ public class ListClasses extends BaseActivity {
             TextView mTextView;
             @InjectView(R.id.icon)
             TextView mIcon;
+            @InjectView(R.id.buttonEnroll)
+            Button enrollButton;
+
             private Deck mDeck;
 
             public ViewHolder(View itemView) {
@@ -215,6 +231,14 @@ public class ListClasses extends BaseActivity {
                     public void onClick(View view) {
                         if (mOnItemClickListener != null) {
                             mOnItemClickListener.onItemClick(mDeck);
+                        }
+                    }
+                });
+                enrollButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onEnrollClick(view, mDeck);
                         }
                     }
                 });
