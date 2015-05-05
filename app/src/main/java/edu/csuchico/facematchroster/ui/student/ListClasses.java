@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
@@ -31,12 +32,13 @@ import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.ui.BaseActivity;
+import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class ListClasses extends BaseActivity {
+public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(ListClasses.class);
 
     @InjectView(R.id.recycler_view)
@@ -74,9 +76,27 @@ public class ListClasses extends BaseActivity {
         }
     };
 
-    private void saveStudentOnClass(ClassModel deck) {
+    private void saveStudentOnClass(ClassModel aClass) {
 
+        ClassStudent classStudent = new ClassStudent(
+                aClass.getClassId(), // class id
+                AccountUtils.getActiveAccountName(ListClasses.this) // student id
+        );
 
+        AmazonAwsUtils.SaveToCognitoHelper saveToCognitoHelper = AmazonAwsUtils
+                .SaveToCognitoHelper
+                .saveToCognitoWithoutDialog(ListClasses.this, ListClasses.this);
+
+        saveToCognitoHelper.execute(classStudent);
+    }
+
+    @Override
+    public void saveToCognitoResult(boolean result) {
+        if (result == true) {
+            Toast.makeText(ListClasses.this, "Enrolled", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(ListClasses.this, "Can't enroll", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -253,7 +273,7 @@ public class ListClasses extends BaseActivity {
     }
 
     @DynamoDBTable(tableName = "class_student")
-    private class ClassStudent {
+    public class ClassStudent {
         private String mClassId;
         private String mStudentId;
 
