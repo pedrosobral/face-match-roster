@@ -49,4 +49,5 @@
     <string name="google_account_required_title">Google Account Required</string>
     <string name="action_save">Save</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_list_classes">All Classes</string>
 </resources>

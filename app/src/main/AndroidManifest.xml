@@ -20,7 +20,6 @@
             android:name=".ui.ClassesActivity"
             android:label="@string/title_activity_classes"
             android:launchMode="singleTask" >
-
         </activity>
         <activity
             android:name=".ui.AddClassActivity"
@@ -55,6 +54,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.student.ListClasses"
+            android:label="@string/title_activity_list_classes" >
         </activity>
     </application>
 
