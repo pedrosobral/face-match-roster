@@ -138,18 +138,18 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
             e.printStackTrace();
         }
 
-        List<ClassModel> listDeck = new ArrayList<>();
+        List<ClassModel> listClasses = new ArrayList<>();
         if (list != null) {
             LOGD(TAG, "list != null - list.size: " + list.size());
             Iterator it = list.iterator();
             ClassModel classModel;
             while (it.hasNext()) {
                 classModel = (ClassModel) it.next();
-                listDeck.add(classModel);
+                listClasses.add(classModel);
             }
         }
 
-        return listDeck;
+        return listClasses;
     }
 
 
