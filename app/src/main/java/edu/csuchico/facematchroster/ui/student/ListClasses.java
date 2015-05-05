@@ -2,6 +2,7 @@ package edu.csuchico.facematchroster.ui.student;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -37,8 +38,11 @@ public class ListClasses extends BaseActivity {
 
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @InjectView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
 
     private DeckAdapter mDeckAdapter;
+    private LinearLayoutManager mLinearLayoutManager;
 
     private DeckAdapter.OnItemClickListener onItemClickListener = new DeckAdapter.OnItemClickListener() {
         @Override
@@ -52,6 +56,16 @@ public class ListClasses extends BaseActivity {
         }
     };
 
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            // update data and refresh
+            mDeckAdapter.updateData(getData());
+            // dismiss swipeRefresh layout
+            mSwipeRefresh.setRefreshing(false);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +76,11 @@ public class ListClasses extends BaseActivity {
         mDeckAdapter.setOnItemClickListener(onItemClickListener);
 
         mRecyclerView.setAdapter(mDeckAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ListClasses.this));
+        mLinearLayoutManager = new LinearLayoutManager(ListClasses.this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+
+        // refresh
+        mSwipeRefresh.setOnRefreshListener(onRefreshListener);
     }
 
     private List<Deck> getData() {
@@ -132,6 +150,11 @@ public class ListClasses extends BaseActivity {
 
         public DeckAdapter(List<Deck> data) {
             mDataModel = data;
+        }
+
+        public void updateData(List<Deck> data) {
+            mDataModel = data;
+            notifyDataSetChanged();
         }
 
         @Override
