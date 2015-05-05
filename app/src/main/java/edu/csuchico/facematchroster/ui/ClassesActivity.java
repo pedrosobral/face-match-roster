@@ -110,7 +110,7 @@ public class ClassesActivity extends BaseActivity {
             case R.id.debug: {
                 Intent intent = new Intent(ClassesActivity.this, StudentLogin.class);
                 startActivity(intent);
-                ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.LEFT);
+                ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.Direction.LEFT);
             }
             break;
         }

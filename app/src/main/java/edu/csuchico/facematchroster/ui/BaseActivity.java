@@ -392,20 +392,20 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
                     case NAVDRAWER_ITEM_CLASSES:
                         intent = new Intent(getBaseContext(), ClassesActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.LEFT);
 
                         break;
                     case NAVDRAWER_ITEM_ADD_CLASS:
                         intent = new Intent(getBaseContext(), AddClassActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.LEFT);
                         invalidateLastSelectedPosition();
 
                         break;
                     case NAVDRAWER_ITEM_SETTINGS:
                         intent = new Intent(getBaseContext(), SettingsActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.FADE);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.FADE);
                         invalidateLastSelectedPosition();
 
                         break;

@@ -109,7 +109,7 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
         if (result == true) {
             Toast.makeText(AddClassActivity.this, "Class saved", Toast.LENGTH_LONG).show();
             finish();
-            ActivityTransitionAnimation.slide(AddClassActivity.this, ActivityTransitionAnimation.LEFT);
+            ActivityTransitionAnimation.slide(AddClassActivity.this, ActivityTransitionAnimation.Direction.LEFT);
         } else {
             Toast.makeText(AddClassActivity.this, "Can't save", Toast.LENGTH_LONG).show();
         }

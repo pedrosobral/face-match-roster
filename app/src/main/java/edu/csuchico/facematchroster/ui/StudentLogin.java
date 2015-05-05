@@ -274,6 +274,6 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
     public void finish() {
         super.finish();
         ActivityTransitionAnimation.
-                slide(StudentLogin.this, ActivityTransitionAnimation.RIGHT);
+                slide(StudentLogin.this, ActivityTransitionAnimation.Direction.RIGHT);
     }
 }
