@@ -15,11 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.ClassModel;
+import edu.csuchico.facematchroster.model.ClassStudent;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
@@ -269,38 +267,6 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
             public void onBind(ClassModel deck) {
                 mDeck = deck;
             }
-        }
-    }
-
-    @DynamoDBTable(tableName = "class_student")
-    public class ClassStudent {
-        private String mClassId;
-        private String mStudentId;
-
-        public ClassStudent() {
-        }
-
-        public ClassStudent(String mClassId, String mStudentId) {
-            this.mClassId = mClassId;
-            this.mStudentId = mStudentId;
-        }
-
-        @DynamoDBHashKey(attributeName = "class_id")
-        public String getClassId() {
-            return mClassId;
-        }
-
-        public void setClassId(String mClassId) {
-            this.mClassId = mClassId;
-        }
-
-        @DynamoDBRangeKey(attributeName = "student_id")
-        public String getStudentId() {
-            return mStudentId;
-        }
-
-        public void setStudentId(String mStudentId) {
-            this.mStudentId = mStudentId;
         }
     }
 }
