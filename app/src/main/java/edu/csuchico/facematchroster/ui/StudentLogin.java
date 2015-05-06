@@ -114,7 +114,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
                     saveToCognitoWithDialog(StudentLogin.this, materialDialog, StudentLogin.this);
 
             Student student = new Student();
-            student.setUserid("2");
+            student.setUserid(AccountUtils.getActiveAccountName(StudentLogin.this));
             student.setTimestamp(System.currentTimeMillis());
             student.setName(AccountUtils.getPlusName(StudentLogin.this));
             student.setEmail(AccountUtils.getActiveAccountName(StudentLogin.this));
