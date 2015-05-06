@@ -1,6 +1,7 @@
 package edu.csuchico.facematchroster.ui;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,24 +13,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.Deck;
+import edu.csuchico.facematchroster.ui.student.ListClasses;
+import edu.csuchico.facematchroster.util.AccountUtils;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class ClassesActivity extends BaseActivity {
     private static final String TAG = makeLogTag(ClassesActivity.class);
+
+    public static final String CLASS_ID = "class_id";
+    public static final String ClASS_NAME = "class_name";
 
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -42,6 +58,10 @@ public class ClassesActivity extends BaseActivity {
         @Override
         public void onItemClick(Deck deck) {
             LOGD(TAG, "onItemClick: " + deck.getTitle());
+            Intent intent = new Intent(ClassesActivity.this, FlashcardActivity.class);
+            intent.putExtra(CLASS_ID, deck.getId());
+            intent.putExtra(ClASS_NAME, deck.getTitle());
+            startActivity(intent);
         }
 
         @Override
@@ -61,7 +81,6 @@ public class ClassesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
         ButterKnife.inject(this);
-
         mDeckAdapter = new DeckAdapter(getData());
         mDeckAdapter.setOnItemClickListener(onItemClickListener);
 
@@ -70,16 +89,42 @@ public class ClassesActivity extends BaseActivity {
     }
 
     private List<Deck> getData() {
-        // TODO: make up data just for test
+
+        final DynamoDBMapper mapper = AmazonAwsUtils.getDynamoDBMapper(ClassesActivity.this);
+
+        final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
+
+        final Condition rangeKeyCondition = new Condition()
+                .withComparisonOperator(ComparisonOperator.EQ)
+                .withAttributeValueList(new AttributeValue().withS(instructorId));
+
+        final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterConditionEntry("instructor_id", rangeKeyCondition);
+
+        AsyncTask<Void, Void, PaginatedScanList<ClassModel>> task = new AsyncTask<Void, Void, PaginatedScanList<ClassModel>>() {
+            @Override
+            protected PaginatedScanList<ClassModel> doInBackground(Void... voids) {
+                return mapper.scan(ClassModel.class, scanExpression); //query(ClassModel.class, queryExpression);
+            }
+        };
+
+        PaginatedScanList<ClassModel> result = null;
+        try {
+            result = task.execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         List<Deck> listDeck = new ArrayList<>();
-        String[][] names = new String[][]{
-                {"Android Development", "567"},
-                {"Operating Systems", "340"},
-                {"Systems Programming", "540"},
-                {"Programming and Algorithms II", "211"},
-                {"Fundamental UNIX System Administration", "444"}};
-        for (int i = 0; i < 5; i++) {
-            listDeck.add(new Deck(names[i][1], names[i][0], null, null, null));
+        if (result != null) {
+            Iterator it = result.iterator();
+            ClassModel aClass;
+            while (it.hasNext()) {
+                aClass = (ClassModel) it.next();
+                listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
+            }
         }
 
         return listDeck;
@@ -104,7 +149,7 @@ public class ClassesActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case R.id.action_settings: {
-                startActivity(new Intent(ClassesActivity.this, LoginActivity.class));
+                startActivity(new Intent(ClassesActivity.this, ListClasses.class));
             }
             break;
             case R.id.debug: {
