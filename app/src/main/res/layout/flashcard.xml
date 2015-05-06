@@ -103,8 +103,8 @@
 
                                 <ImageView
                                     android:id="@+id/answer_field"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="400dp"
+                                    android:layout_height="400dp"
                                     android:scaleType="centerInside"
                                     android:layout_gravity="center_horizontal"
                                     android:src="@drawable/photo_test"
@@ -115,9 +115,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="Here is going to appear the name"
+                                    android:text=""
                                     android:textSize="20sp"
                                     android:textStyle="bold"
+                                    android:visibility="gone"
                                     android:layout_gravity="center_horizontal" />
                             </LinearLayout>
                         </ScrollView>
@@ -163,8 +164,9 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/show_name"
+                        android:text="Forgot"
                         android:visibility="gone"
+                        android:background="#D32F2F"
                         materialdesign:rippleSpeed="50" />
 
 
@@ -173,8 +175,9 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/show_name"
+                        android:text="Hard"
                         android:visibility="gone"
+                        android:background="#1976D2"
                         materialdesign:rippleSpeed="50" />
 
                     <com.gc.materialdesign.views.ButtonRectangle
@@ -182,8 +185,9 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/show_name"
+                        android:text="Easy"
                         android:visibility="gone"
+                        android:background="#4CAF50"
                         materialdesign:rippleSpeed="50" />
 
                     <com.gc.materialdesign.views.ButtonRectangle
@@ -191,8 +195,9 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/show_name"
+                        android:text="Very Easy"
                         android:visibility="gone"
+                        android:background="#388E3C"
                         materialdesign:rippleSpeed="50" />
 
                 </LinearLayout>
