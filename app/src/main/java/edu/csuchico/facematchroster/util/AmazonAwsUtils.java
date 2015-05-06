@@ -13,6 +13,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import edu.csuchico.facematchroster.model.ClassModel;
+import edu.csuchico.facematchroster.model.ClassStudent;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
@@ -165,8 +166,8 @@ public class AmazonAwsUtils {
                 model = ((Student) objects[0]);
             } else if (objects[0] instanceof Instructor) {
                 model = (Instructor) objects[0];
-            } else if (objects[0] instanceof ListClasses.ClassStudent) {
-                model = (ListClasses.ClassStudent) objects[0];
+            } else if (objects[0] instanceof ClassStudent) {
+                model = (ClassStudent) objects[0];
             }
 
             return model;
