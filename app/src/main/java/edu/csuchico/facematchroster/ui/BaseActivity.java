@@ -365,7 +365,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
 
             String item = getItem(position);
 
-            View view = null;
+            View view;
             if (item.isEmpty()) {    // separator
                 return inflater.inflate(R.layout.navdrawer_separator, parent, false);
             }
