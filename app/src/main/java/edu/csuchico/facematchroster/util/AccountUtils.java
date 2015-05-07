@@ -132,18 +132,6 @@ public class AccountUtils {
         setAuthToken(context, null);
     }
 
-    public static void setPlusProfileId(final Context context, final String accountName, final String profileId) {
-        SharedPreferences sp = getSharedPreferences(context);
-        sp.edit().putString(makeAccountSpecificPrefKey(accountName, PREFIX_PREF_PLUS_PROFILE_ID),
-                profileId).apply();
-    }
-
-    public static String getPlusProfileId(final Context context) {
-        SharedPreferences sp = getSharedPreferences(context);
-        return hasActiveAccount(context) ? sp.getString(makeAccountSpecificPrefKey(context,
-                PREFIX_PREF_PLUS_PROFILE_ID), null) : null;
-    }
-
     public static boolean hasPlusInfo(final Context context, final String accountName) {
         SharedPreferences sp = getSharedPreferences(context);
         return !TextUtils.isEmpty(sp.getString(makeAccountSpecificPrefKey(accountName,
