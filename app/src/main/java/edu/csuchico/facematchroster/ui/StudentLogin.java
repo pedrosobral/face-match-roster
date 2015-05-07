@@ -66,7 +66,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
     @OnClick(R.id.imageView)
     public void dispatchGetPictureIntent() {
         // Camera intent
-        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final List<Intent> cameraIntents = new ArrayList<>();
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager packageManager = getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);

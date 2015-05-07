@@ -100,8 +100,8 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
 
     public LoginAndAuthHelper(Activity activity, Callbacks callbacks, String accountName) {
         LOGD(TAG, "Helper created. Account: " + mAccountName);
-        mActivityRef = new WeakReference<Activity>(activity);
-        mCallbacksRef = new WeakReference<Callbacks>(callbacks);
+        mActivityRef = new WeakReference<>(activity);
+        mCallbacksRef = new WeakReference<>(callbacks);
         mAppContext = activity.getApplicationContext();
         mAccountName = accountName;
         if (PrefUtils.hasUserRefusedSignIn(activity)) {
