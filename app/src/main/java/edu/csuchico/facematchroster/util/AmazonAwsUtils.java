@@ -77,7 +77,7 @@ public class AmazonAwsUtils {
     public static boolean setPhotoFileName(final Context context, final String filename) {
         LOGD(TAG, "Set photo filename: " + filename);
         SharedPreferences sp = AmazonAwsUtils.getSharedPreferences(context);
-        sp.edit().putString(PREFIX_PREF_PHOTO_FILENAME, filename).commit();
+        sp.edit().putString(PREFIX_PREF_PHOTO_FILENAME, filename).apply();
         return true;
     }
 
