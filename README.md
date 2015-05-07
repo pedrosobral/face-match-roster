@@ -14,3 +14,13 @@
 * Show classes enrolled as principal activity
 * Show all classes in other activity "All Classes": (already created) just need to put in the menu options;
     * Button "enroll" (already created) we just need to save the state in the database
+
+***
+## Libraries ##
+
+* [Butter Knife](https://github.com/JakeWharton/butterknife)
+* [Picasso](https://github.com/square/picasso)
+* [CircleImageView](https://github.com/hdodenhof/CircleImageView)
+* [Material Dialogs](https://github.com/afollestad/material-dialogs)
+* [Material Design Android Library](https://github.com/navasmdc/MaterialDesignLibrary)
+* [FloatingActionButton](https://github.com/futuresimple/android-floating-action-button)
