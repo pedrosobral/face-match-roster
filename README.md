@@ -1,4 +1,4 @@
-# FaceMatch Roster #
+# **FaceMatch Roster** #
 ***
 ## TODO ###
 * Test the Authentication process in a real device with API 14
