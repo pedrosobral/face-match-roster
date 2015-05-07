@@ -131,7 +131,7 @@ public class FlashcardActivity extends BaseActivity {
         return url;
     }
 
-    private ArrayList getStudentsId() {
+    private ArrayList<String> getStudentsId() {
         String class_id = getIntent().getStringExtra(ClassesActivity.CLASS_ID);
         LOGD(TAG, "class_id: " + class_id);
 
