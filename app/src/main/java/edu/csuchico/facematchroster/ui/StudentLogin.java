@@ -89,7 +89,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
         final Intent chooserIntent = Intent.createChooser(galleryIntent, "Complete action using");
 
         // Add the camera options
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
         startActivityForResult(chooserIntent, REQUEST_IMAGE_GALLERY);
     }
 
