@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="edu.csuchico.facematchroster.ClassesActivity">
 
-    <include layout="@layout/toolbar_actionbar"></include>
+    <include layout="@layout/toolbar_actionbar"/>
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
