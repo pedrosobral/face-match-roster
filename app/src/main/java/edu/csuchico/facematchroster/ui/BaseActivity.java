@@ -74,7 +74,8 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         public void onDrawerClosed(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerClosed(drawerView);
             // TODO: change title when closed
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
 
         @Override
