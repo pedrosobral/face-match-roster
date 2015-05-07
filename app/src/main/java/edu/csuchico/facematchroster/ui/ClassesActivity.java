@@ -183,7 +183,7 @@ public class ClassesActivity extends BaseActivity {
             Deck deck = mDataModel.get(position);
 
             holder.mTextView.setText(deck.getTitle());
-            holder.mIcon.setText(new Integer(deck.getId()).toString());
+            holder.mIcon.setText(Integer.valueOf(deck.getId()).toString());
 
             holder.onBind(deck);
         }
