@@ -90,7 +90,7 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
 
     @Override
     public void saveToCognitoResult(boolean result) {
-        if (result == true) {
+        if (result) {
             Toast.makeText(ListClasses.this, "Enrolled", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(ListClasses.this, "Can't enroll", Toast.LENGTH_SHORT).show();

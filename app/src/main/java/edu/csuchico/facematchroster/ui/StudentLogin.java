@@ -127,7 +127,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
 
     @Override
     public void saveToCognitoResult(boolean result) {
-        if (result == false) {
+        if (!result) {
             new MaterialDialog.Builder(StudentLogin.this)
                     .title("Signing in...")
                     .content("Can't connect")
