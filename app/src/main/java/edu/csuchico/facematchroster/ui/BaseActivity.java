@@ -91,7 +91,8 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         @Override
         public void onDrawerOpened(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerOpened(drawerView);
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
     };
     private Toolbar mActionBarToolbar;
