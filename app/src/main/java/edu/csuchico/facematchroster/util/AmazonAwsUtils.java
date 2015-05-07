@@ -16,7 +16,6 @@ import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.ClassStudent;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.model.Student;
-import edu.csuchico.facematchroster.ui.student.ListClasses;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;

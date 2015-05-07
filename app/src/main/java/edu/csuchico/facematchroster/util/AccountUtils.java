@@ -35,7 +35,6 @@ import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGI;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGV;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGW;
-import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 /**
  * Account and login utilities. This class manages a local shared preferences object
