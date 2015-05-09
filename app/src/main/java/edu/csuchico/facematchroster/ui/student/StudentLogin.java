@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.ui;
+package edu.csuchico.facematchroster.ui.student;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +34,8 @@ import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.Student;
+import edu.csuchico.facematchroster.ui.BaseActivity;
+import edu.csuchico.facematchroster.ui.ClassesActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 

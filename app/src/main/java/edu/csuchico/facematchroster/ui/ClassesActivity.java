@@ -35,6 +35,7 @@ import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
+import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
