@@ -6,11 +6,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.SignInButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import edu.csuchico.facematchroster.Config;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.util.AccountUtils;
@@ -24,6 +24,20 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
 
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
+    @InjectView(R.id.sign_in_button)
+    SignInButton signInButton;
+
+    @OnClick(R.id.sign_in_button)
+    public void onSignInClick() {
+        connect();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        super.onConnected(connectionHint);
+        signInButton.setVisibility(View.GONE);
+        showDialogInstructorStudentLayout();
+    }
 
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
@@ -93,6 +107,10 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
 
     private void hideDialogInstructorStudentLayout() {
         mDialogLayout.setVisibility(View.GONE);
+    }
+
+    private void showDialogInstructorStudentLayout() {
+        mDialogLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
