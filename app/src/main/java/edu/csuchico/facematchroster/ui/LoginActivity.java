@@ -19,7 +19,7 @@ import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
+public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(LoginActivity.class);
 
     @InjectView(R.id.dialog_layout)
@@ -76,13 +76,13 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         /**
          * Only show the login activity once
          */
-        if (Config.IS_DOGFOOD_BUILD || !AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
+        if (/*Config.IS_DOGFOOD_BUILD || */!AccountUtils.hasActiveAccount(this)) {
             setContentView(R.layout.activity_login);
             ButterKnife.inject(this);
         } else {

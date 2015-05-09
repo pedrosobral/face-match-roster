@@ -21,6 +21,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.LogUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
@@ -46,6 +47,9 @@ public class GoogleLogin extends Activity implements
     private static final int STATE_IN_PROGRESS = 2;
     private static final int RC_SIGN_IN = 0;
     private static final String SAVED_PROGRESS = "sign_in_progress";
+
+    // Name of the account to log in as (e.g. "foo@example.com")
+    String mAccountName;
 
     static {
         StringBuilder sb = new StringBuilder();
@@ -86,26 +90,26 @@ public class GoogleLogin extends Activity implements
     // until the user clicks 'sign in'.
     private int mSignInError;
 
-    private SignInButton mSignInButton;
-    private Button mSignOutButton;
-    private Button mRevokeButton;
-    private TextView mStatus;
+//    private SignInButton mSignInButton;
+//    private Button mSignOutButton;
+//    private Button mRevokeButton;
+//    private TextView mStatus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_google_login);
+//        setContentView(R.layout.test_google_login);
         LOGD(TAG, "onCreate()");
 
-        mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
-        mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
-        mStatus = (TextView) findViewById(R.id.sign_in_status);
+//        mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
+//        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+//        mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
+//        mStatus = (TextView) findViewById(R.id.sign_in_status);
 
         // Button listeners
-        mSignInButton.setOnClickListener(this);
-        mSignOutButton.setOnClickListener(this);
-        mRevokeButton.setOnClickListener(this);
+//        mSignInButton.setOnClickListener(this);
+//        mSignOutButton.setOnClickListener(this);
+//        mRevokeButton.setOnClickListener(this);
 
         if (savedInstanceState != null) {
             mSignInProgress = savedInstanceState
@@ -113,6 +117,8 @@ public class GoogleLogin extends Activity implements
         }
 
         mGoogleApiClient = buildGoogleApiClient();
+
+        connect();
     }
 
     private GoogleApiClient buildGoogleApiClient() {
@@ -154,13 +160,22 @@ public class GoogleLogin extends Activity implements
         outState.putInt(SAVED_PROGRESS, mSignInProgress);
     }
 
+    public void connect() {
+//        mStatus.setText(R.string.status_signing_in);
+
+        if (!mGoogleApiClient.isConnecting()) {
+            mSignInProgress = STATE_SIGN_IN;
+            mGoogleApiClient.connect();
+        }
+    }
+
     public void onClick(View v) {
         if (!mGoogleApiClient.isConnecting()) {
             // We only process button clicks when GoogleApiClient is not transitioning
             // between connected and not connected.
             switch (v.getId()) {
                 case R.id.sign_in_button:
-                    mStatus.setText(R.string.status_signing_in);
+//                    mStatus.setText(R.string.status_signing_in);
                     mSignInProgress = STATE_SIGN_IN;
                     mGoogleApiClient.connect();
                     break;
@@ -201,17 +216,24 @@ public class GoogleLogin extends Activity implements
         // Reaching onConnected means we consider the user signed in.
         LOGI(TAG, "onConnected");
 
-        // Update the user interface to reflect that the user is signed in.
-        mSignInButton.setEnabled(false);
-        mSignOutButton.setEnabled(true);
-        mRevokeButton.setEnabled(true);
+        mAccountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        LOGD(TAG, "Default to: " + mAccountName);
+        AccountUtils.setActiveAccount(getApplicationContext(), mAccountName);
 
-        // Retrieve some profile information to personalize our app for the user.
-        Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        // load user's Name, if we don't have it yet
+        if (!AccountUtils.hasPlusInfo(getApplicationContext(), mAccountName)) {
+            // Retrieve some profile information to personalize our app for the user.
+            LOGD(TAG, "We don't have Google+ info for " + mAccountName + " yet, so loading.");
+            Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
-        mStatus.setText(String.format(
-                getResources().getString(R.string.signed_in_as),
-                currentUser.getDisplayName()));
+            if (person != null) {
+                LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
+                AccountUtils.setPlusName(getApplicationContext(), mAccountName, person.getDisplayName());
+            }
+
+        } else {
+            LOGD(TAG, "No need for Name info, we already have it.");
+        }
 
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
@@ -321,11 +343,11 @@ public class GoogleLogin extends Activity implements
 
     private void onSignedOut() {
         // Update the UI to reflect that the user is signed out.
-        mSignInButton.setEnabled(true);
-        mSignOutButton.setEnabled(false);
-        mRevokeButton.setEnabled(false);
-
-        mStatus.setText(R.string.status_signed_out);
+//        mSignInButton.setEnabled(true);
+//        mSignOutButton.setEnabled(false);
+//        mRevokeButton.setEnabled(false);
+//
+//        mStatus.setText(R.string.status_signed_out);
 
     }
 
@@ -348,7 +370,7 @@ public class GoogleLogin extends Activity implements
                         public void onCancel(DialogInterface dialog) {
                             LOGE(TAG, "Google Play services resolution cancelled");
                             mSignInProgress = STATE_DEFAULT;
-                            mStatus.setText(R.string.status_signed_out);
+//                            mStatus.setText(R.string.status_signed_out);
                         }
                     });
         } else {
@@ -361,7 +383,7 @@ public class GoogleLogin extends Activity implements
                                     LOGE(TAG, "Google Play services error could not be "
                                             + "resolved: " + mSignInError);
                                     mSignInProgress = STATE_DEFAULT;
-                                    mStatus.setText(R.string.status_signed_out);
+//                                    mStatus.setText(R.string.status_signed_out);
                                 }
                             }).create();
         }
