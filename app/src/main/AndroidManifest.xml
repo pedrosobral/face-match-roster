@@ -17,17 +17,17 @@
             android:label="@string/title_activity_student_loggin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ClassesActivity"
+            android:name=".ui.instructor.ClassesActivity"
             android:label="@string/title_activity_classes"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".ui.AddClassActivity"
+            android:name=".ui.instructor.AddClassActivity"
             android:label="@string/title_activity_add_class" />
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.ClassesActivity" >
+            android:parentActivityName=".ui.instructor.ClassesActivity" >
         </activity>
         <activity
             android:name=".ui.FeedbackActivity"
@@ -36,9 +36,9 @@
             android:name=".ui.HelpActivity"
             android:label="@string/title_activity_help" />
         <activity
-            android:name=".ui.FlashcardActivity"
+            android:name=".ui.instructor.FlashcardActivity"
             android:label="@string/title_activity_flash_card"
-            android:parentActivityName=".ui.ClassesActivity" >
+            android:parentActivityName=".ui.instructor.ClassesActivity" >
         </activity>
 
         <!-- Google Play Services -->

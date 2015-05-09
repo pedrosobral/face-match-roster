@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.ui;
+package edu.csuchico.facematchroster.ui.instructor;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +15,7 @@ import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.ClassModel;
+import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 

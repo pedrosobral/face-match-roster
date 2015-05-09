@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.ui.instructor.AddClassActivity;
+import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
 
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 

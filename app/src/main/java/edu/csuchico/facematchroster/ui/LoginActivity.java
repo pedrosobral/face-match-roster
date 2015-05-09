@@ -13,6 +13,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
+import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;

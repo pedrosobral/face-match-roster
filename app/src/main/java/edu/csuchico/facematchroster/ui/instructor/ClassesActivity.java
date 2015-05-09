@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.ui;
+package edu.csuchico.facematchroster.ui.instructor;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -34,6 +34,7 @@ import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.Deck;
+import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
