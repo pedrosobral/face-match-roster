@@ -145,40 +145,27 @@ public class GoogleLogin extends Activity implements
         }
     }
 
-    public void onClick(View v) {
-        if (!mGoogleApiClient.isConnecting()) {
-            // We only process button clicks when GoogleApiClient is not transitioning
-            // between connected and not connected.
-            switch (v.getId()) {
-                case R.id.sign_in_button:
-//                    mStatus.setText(R.string.status_signing_in);
-                    mSignInProgress = STATE_SIGN_IN;
-                    mGoogleApiClient.connect();
-                    break;
-                case R.id.sign_out_button:
-                    // We clear the default account on sign out so that Google Play
-                    // services will not return an onConnected callback without user
-                    // interaction.
-                    if (mGoogleApiClient.isConnected()) {
-                        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                        mGoogleApiClient.disconnect();
-                    }
-                    onSignedOut();
-                    break;
-                case R.id.revoke_access_button:
-                    // After we revoke permissions for the user with a GoogleApiClient
-                    // instance, we must discard it and create a new one.
-                    Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-                    // Our sample has caches no user data from Google+, however we
-                    // would normally register a callback on revokeAccessAndDisconnect
-                    // to delete user data so that we comply with Google developer
-                    // policies.
-                    Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient);
-                    mGoogleApiClient = buildGoogleApiClient();
-                    mGoogleApiClient.connect();
-                    break;
-            }
+    public void signOut() {
+        // We clear the default account on sign out so that Google Play
+        // services will not return an onConnected callback without user
+        // interaction.
+        if (mGoogleApiClient.isConnected()) {
+            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+            mGoogleApiClient.disconnect();
         }
+    }
+
+    public void revokeAccess() {
+        // After we revoke permissions for the user with a GoogleApiClient
+        // instance, we must discard it and create a new one.
+        Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+        // Our sample has caches no user data from Google+, however we
+        // would normally register a callback on revokeAccessAndDisconnect
+        // to delete user data so that we comply with Google developer
+        // policies.
+        Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient);
+        mGoogleApiClient = buildGoogleApiClient();
+        mGoogleApiClient.connect();
     }
 
     /* onConnected is called when our Activity successfully connects to Google
