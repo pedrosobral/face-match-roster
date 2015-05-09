@@ -66,7 +66,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
     @OnClick(R.id.imageView)
     public void dispatchGetPictureIntent() {
         // Camera intent
-        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final List<Intent> cameraIntents = new ArrayList<>();
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager packageManager = getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
@@ -89,7 +89,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
         final Intent chooserIntent = Intent.createChooser(galleryIntent, "Complete action using");
 
         // Add the camera options
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
         startActivityForResult(chooserIntent, REQUEST_IMAGE_GALLERY);
     }
 
@@ -127,7 +127,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
 
     @Override
     public void saveToCognitoResult(boolean result) {
-        if (result == false) {
+        if (!result) {
             new MaterialDialog.Builder(StudentLogin.this)
                     .title("Signing in...")
                     .content("Can't connect")

@@ -7,7 +7,7 @@ import edu.csuchico.facematchroster.R;
 
 public class ActivityTransitionAnimation {
 
-    public enum Direction {LEFT, RIGHT, FADE, UP, DOWN, NONE};
+    public enum Direction {LEFT, RIGHT, FADE, UP, DOWN, NONE}
 
     @TargetApi(5)
     public static void slide(Activity activity, Direction direction) {

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="edu.csuchico.facematchroster.ui.student.ListClasses">
 
-    <include layout="@layout/toolbar_actionbar"></include>
+    <include layout="@layout/toolbar_actionbar"/>
 
 
     <android.support.v4.widget.DrawerLayout
@@ -32,7 +32,7 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <!-- The navigation drawer -->
-        <include layout="@layout/include_navdrawer_list"></include>
+        <include layout="@layout/include_navdrawer_list"/>
 
     </android.support.v4.widget.DrawerLayout>
 

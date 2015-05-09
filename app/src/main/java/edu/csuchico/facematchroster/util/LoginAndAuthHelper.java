@@ -100,8 +100,8 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
 
     public LoginAndAuthHelper(Activity activity, Callbacks callbacks, String accountName) {
         LOGD(TAG, "Helper created. Account: " + mAccountName);
-        mActivityRef = new WeakReference<Activity>(activity);
-        mCallbacksRef = new WeakReference<Callbacks>(callbacks);
+        mActivityRef = new WeakReference<>(activity);
+        mCallbacksRef = new WeakReference<>(callbacks);
         mAppContext = activity.getApplicationContext();
         mAccountName = accountName;
         if (PrefUtils.hasUserRefusedSignIn(activity)) {
@@ -194,8 +194,11 @@ public class LoginAndAuthHelper implements GoogleApiClient.ConnectionCallbacks, 
         if (!AccountUtils.hasPlusInfo(activity, mAccountName)) {
             LOGD(TAG, "We don't have Google+ info for " + mAccountName + " yet, so loading.");
             Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
-            AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
+
+            if (person != null) {
+                LOGD(TAG, "Saving plus display name: " + person.getDisplayName());
+                AccountUtils.setPlusName(mAppContext, mAccountName, person.getDisplayName());
+            }
 
         } else {
             LOGD(TAG, "No need for Name info, we already have it.");

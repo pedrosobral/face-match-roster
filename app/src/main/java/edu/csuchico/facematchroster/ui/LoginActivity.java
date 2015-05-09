@@ -25,11 +25,6 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
 
-    @Override
-    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
-        super.onAuthSuccess(accountName, newlyAuthenticated);
-    }
-
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
         LOGD(TAG, "Login Instructor");

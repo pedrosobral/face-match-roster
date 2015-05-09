@@ -11,5 +11,5 @@
         android:id="@+id/debug"
         android:orderInCategory="200"
         android:title="DEBUG"
-        app:showAsAction="never"></item>
+        app:showAsAction="never"/>
 </menu>

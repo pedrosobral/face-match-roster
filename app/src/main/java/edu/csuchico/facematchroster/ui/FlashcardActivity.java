@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.gc.materialdesign.views.ButtonRectangle;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -131,7 +129,7 @@ public class FlashcardActivity extends BaseActivity {
         return url;
     }
 
-    private ArrayList getStudentsId() {
+    private ArrayList<String> getStudentsId() {
         String class_id = getIntent().getStringExtra(ClassesActivity.CLASS_ID);
         LOGD(TAG, "class_id: " + class_id);
 

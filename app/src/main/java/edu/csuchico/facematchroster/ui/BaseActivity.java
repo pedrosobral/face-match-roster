@@ -74,7 +74,8 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         public void onDrawerClosed(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerClosed(drawerView);
             // TODO: change title when closed
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
 
         @Override
@@ -90,7 +91,8 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         @Override
         public void onDrawerOpened(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerOpened(drawerView);
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
     };
     private Toolbar mActionBarToolbar;
@@ -363,7 +365,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
 
             String item = getItem(position);
 
-            View view = null;
+            View view;
             if (item.isEmpty()) {    // separator
                 return inflater.inflate(R.layout.navdrawer_separator, parent, false);
             }
