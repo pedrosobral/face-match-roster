@@ -6,24 +6,41 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.SignInButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import edu.csuchico.facematchroster.Config;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
+import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
+import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
+import edu.csuchico.facematchroster.util.GoogleLogin;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
+public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(LoginActivity.class);
 
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
+    @InjectView(R.id.sign_in_button)
+    SignInButton signInButton;
+
+    @OnClick(R.id.sign_in_button)
+    public void onSignInClick() {
+        connect();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        super.onConnected(connectionHint);
+        signInButton.setVisibility(View.GONE);
+        showDialogInstructorStudentLayout();
+    }
 
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
@@ -76,13 +93,13 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         /**
          * Only show the login activity once
          */
-        if (Config.IS_DOGFOOD_BUILD || !AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
+        if (/*Config.IS_DOGFOOD_BUILD || */!AccountUtils.hasActiveAccount(this)) {
             setContentView(R.layout.activity_login);
             ButterKnife.inject(this);
         } else {
@@ -93,6 +110,10 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
 
     private void hideDialogInstructorStudentLayout() {
         mDialogLayout.setVisibility(View.GONE);
+    }
+
+    private void showDialogInstructorStudentLayout() {
+        mDialogLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

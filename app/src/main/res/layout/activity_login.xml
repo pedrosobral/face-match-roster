@@ -4,25 +4,36 @@
     android:layout_height="match_parent"
     tools:context="edu.csuchico.facematchroster.ui.LoginActivity">
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dip"
+        android:visibility="visible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:enabled="false" />
+
     <LinearLayout
         android:id="@+id/dialog_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/buttonInstructor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="I'm Instructor"/>
+            android:text="I'm Instructor" />
 
         <Button
             android:id="@+id/buttonStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="I'm Student"/>
+            android:text="I'm Student" />
 
     </LinearLayout>
 </RelativeLayout>

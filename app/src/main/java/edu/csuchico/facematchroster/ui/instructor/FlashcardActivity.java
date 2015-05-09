@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.ui;
+package edu.csuchico.facematchroster.ui.instructor;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +24,7 @@ import butterknife.InjectView;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.ClassStudent;
 import edu.csuchico.facematchroster.model.Student;
+import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
