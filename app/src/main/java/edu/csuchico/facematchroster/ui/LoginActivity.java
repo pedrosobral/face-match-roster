@@ -16,6 +16,7 @@ import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
+import edu.csuchico.facematchroster.util.GoogleLogin;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;

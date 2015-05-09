@@ -1,4 +1,4 @@
-package edu.csuchico.facematchroster.ui;
+package edu.csuchico.facematchroster.util;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -18,8 +17,6 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
 import edu.csuchico.facematchroster.R;
-import edu.csuchico.facematchroster.util.AccountUtils;
-import edu.csuchico.facematchroster.util.LogUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
