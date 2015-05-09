@@ -9,12 +9,9 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
@@ -34,7 +31,7 @@ import static edu.csuchico.facematchroster.util.LogUtils.LOGW;
  * users profile information.
  */
 public class GoogleLogin extends Activity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Auth scopes we need
     public static final String AUTH_SCOPES[] = {
@@ -48,9 +45,6 @@ public class GoogleLogin extends Activity implements
     private static final int RC_SIGN_IN = 0;
     private static final String SAVED_PROGRESS = "sign_in_progress";
 
-    // Name of the account to log in as (e.g. "foo@example.com")
-    String mAccountName;
-
     static {
         StringBuilder sb = new StringBuilder();
         sb.append("oauth2:");
@@ -61,6 +55,8 @@ public class GoogleLogin extends Activity implements
         AUTH_TOKEN_TYPE = sb.toString();
     }
 
+    // Name of the account to log in as (e.g. "foo@example.com")
+    String mAccountName;
     // GoogleApiClient wraps our service connection to Google Play services and
     // provides access to the users sign in state and Google's APIs.
     private GoogleApiClient mGoogleApiClient;
@@ -90,26 +86,10 @@ public class GoogleLogin extends Activity implements
     // until the user clicks 'sign in'.
     private int mSignInError;
 
-//    private SignInButton mSignInButton;
-//    private Button mSignOutButton;
-//    private Button mRevokeButton;
-//    private TextView mStatus;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.test_google_login);
         LOGD(TAG, "onCreate()");
-
-//        mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
-//        mSignOutButton = (Button) findViewById(R.id.sign_out_button);
-//        mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
-//        mStatus = (TextView) findViewById(R.id.sign_in_status);
-
-        // Button listeners
-//        mSignInButton.setOnClickListener(this);
-//        mSignOutButton.setOnClickListener(this);
-//        mRevokeButton.setOnClickListener(this);
 
         if (savedInstanceState != null) {
             mSignInProgress = savedInstanceState
@@ -161,8 +141,6 @@ public class GoogleLogin extends Activity implements
     }
 
     public void connect() {
-//        mStatus.setText(R.string.status_signing_in);
-
         if (!mGoogleApiClient.isConnecting()) {
             mSignInProgress = STATE_SIGN_IN;
             mGoogleApiClient.connect();
@@ -342,12 +320,6 @@ public class GoogleLogin extends Activity implements
     }
 
     private void onSignedOut() {
-        // Update the UI to reflect that the user is signed out.
-//        mSignInButton.setEnabled(true);
-//        mSignOutButton.setEnabled(false);
-//        mRevokeButton.setEnabled(false);
-//
-//        mStatus.setText(R.string.status_signed_out);
 
     }
 
@@ -370,7 +342,6 @@ public class GoogleLogin extends Activity implements
                         public void onCancel(DialogInterface dialog) {
                             LOGE(TAG, "Google Play services resolution cancelled");
                             mSignInProgress = STATE_DEFAULT;
-//                            mStatus.setText(R.string.status_signed_out);
                         }
                     });
         } else {
@@ -383,7 +354,6 @@ public class GoogleLogin extends Activity implements
                                     LOGE(TAG, "Google Play services error could not be "
                                             + "resolved: " + mSignInError);
                                     mSignInProgress = STATE_DEFAULT;
-//                                    mStatus.setText(R.string.status_signed_out);
                                 }
                             }).create();
         }
