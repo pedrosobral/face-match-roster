@@ -246,7 +246,8 @@ public class GoogleLogin extends Activity implements
                 // STATE_SIGN_IN indicates the user already clicked the sign in button
                 // so we should continue processing errors until the user is signed in
                 // or they click cancel.
-                resolveSignInError();
+                complainMustHaveGoogleAccount();
+//                resolveSignInError();
             }
         }
 
@@ -292,6 +293,27 @@ public class GoogleLogin extends Activity implements
             // user can resolve the issue.
             createErrorDialog().show();
         }
+    }
+
+    private void complainMustHaveGoogleAccount() {
+        LOGD(TAG, "Complaining about missing Google account.");
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.google_account_required_title)
+                .setMessage(R.string.google_account_required_message)
+                .setPositiveButton(R.string.add_account, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        resolveSignInError();
+                    }
+                })
+                .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     @Override
