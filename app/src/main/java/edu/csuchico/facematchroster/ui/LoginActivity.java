@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
 import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
+import edu.csuchico.facematchroster.ui.student.ListClasses;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
@@ -45,6 +46,9 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
         LOGD(TAG, "Login Instructor");
+
+        AccountUtils.setInstructorAccount(LoginActivity.this, true);
+
         hideDialogInstructorStudentLayout();
 
         final MaterialDialog materialDialog =
@@ -69,6 +73,8 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
     public void onLoginStudent() {
         LOGD(TAG, "Login Student");
         hideDialogInstructorStudentLayout();
+
+        AccountUtils.setInstructorAccount(LoginActivity.this, false);
 
         // TODO: sometimes the login process return null
         String userName = AccountUtils.getPlusName(LoginActivity.this);
@@ -99,11 +105,14 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
         /**
          * Only show the login activity once
          */
-        if (/*Config.IS_DOGFOOD_BUILD || */!AccountUtils.hasActiveAccount(this)) {
+        if (!AccountUtils.hasActiveAccount(this)) {
             setContentView(R.layout.activity_login);
             ButterKnife.inject(this);
-        } else {
+        } else if (AccountUtils.isInstructor(LoginActivity.this)) { // instructor account
             startActivity(new Intent(this, ClassesActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(this, ListClasses.class));     // student account
             finish();
         }
     }
