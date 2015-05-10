@@ -111,11 +111,13 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     public void saveToCognitoResult(boolean result) {
         if (result) {
             Toast.makeText(AddClassActivity.this, "Class saved", Toast.LENGTH_LONG).show();
-            finish();
 
             // save class on database
             newClass.save();
+            // set result OK
+            setResult(RESULT_OK, getIntent());
 
+            finish();
             ActivityTransitionAnimation.slide(AddClassActivity.this, ActivityTransitionAnimation.Direction.LEFT);
         } else {
             Toast.makeText(AddClassActivity.this, "Can't save", Toast.LENGTH_LONG).show();

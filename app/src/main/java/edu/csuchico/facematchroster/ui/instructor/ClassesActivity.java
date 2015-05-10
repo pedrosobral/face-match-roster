@@ -39,6 +39,7 @@ public class ClassesActivity extends BaseActivity {
     public static final String CLASS_ID = "class_id";
     public static final String ClASS_NAME = "class_name";
     private static final String TAG = makeLogTag(ClassesActivity.class);
+    private static final int ADD_CLASS_REQUEST = 1;
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @InjectView(R.id.fab)
@@ -72,9 +73,22 @@ public class ClassesActivity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LOGD(TAG, "onActivityResult()");
+        if (requestCode == ADD_CLASS_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                LOGD(TAG, "onActivityResult: updating...");
+                // get the new class added from database
+                mDeckAdapter.updateData(getData());
+            }
+        }
+    }
+
     @OnClick(R.id.add_class)
     public void onAddClass() {
-        startActivity(new Intent(ClassesActivity.this, AddClassActivity.class));
+        startActivityForResult(new Intent(ClassesActivity.this, AddClassActivity.class),
+                ADD_CLASS_REQUEST);
         mFloatActionMenu.collapse();
     }
 
