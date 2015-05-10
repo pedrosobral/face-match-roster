@@ -54,7 +54,7 @@ public class ClassesActivity extends BaseActivity {
         public void onItemClick(Deck deck) {
             LOGD(TAG, "onItemClick: " + deck.getTitle());
             Intent intent = new Intent(ClassesActivity.this, FlashcardActivity.class);
-            intent.putExtra(CLASS_ID, deck.getId());
+            intent.putExtra(CLASS_ID, deck.getClassId());
             intent.putExtra(ClASS_NAME, deck.getTitle());
             startActivity(intent);
         }
@@ -114,7 +114,9 @@ public class ClassesActivity extends BaseActivity {
         ClassModel aClass;
         while (it.hasNext()) {
             aClass = (ClassModel) it.next();
-            listDeck.add( new Deck(aClass.getName(), aClass.getNumber(), null, null));
+            Deck deck = new Deck(aClass.getName(), aClass.getClassId(), null, null);
+            listDeck.add(deck);
+            deck.save(); // save deck database
             aClass.save();
         }
 
