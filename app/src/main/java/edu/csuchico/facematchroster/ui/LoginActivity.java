@@ -26,6 +26,11 @@ import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(LoginActivity.class);
 
+    /**
+     * Passed as extra to intent's when login occur
+     */
+    public static final String FROM_LOGIN_ACTIVITY = "from_login_acitivity";
+
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
     @InjectView(R.id.sign_in_button)
@@ -91,7 +96,9 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        startActivity(new Intent(LoginActivity.this, StudentLogin.class));
+                        Intent intent = new Intent(LoginActivity.this, StudentLogin.class);
+                        intent.putExtra(FROM_LOGIN_ACTIVITY, true);
+                        startActivity(intent);
                         finish();
                     }
                 })
@@ -154,7 +161,9 @@ public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToC
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             dialog.dismiss();
-                            startActivity(new Intent(LoginActivity.this, ClassesActivity.class));
+                            Intent intent = new Intent(LoginActivity.this, ClassesActivity.class);
+                            intent.putExtra(FROM_LOGIN_ACTIVITY, true);
+                            startActivity(intent);
                             finish();
 
                         }
