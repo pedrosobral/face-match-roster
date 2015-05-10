@@ -63,6 +63,12 @@ public class ClassesActivity extends BaseActivity {
             LOGD(TAG, "onIconClick: " + ((TextView) view).getText());
         }
     };
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+
+        }
+    };
 
     @OnClick(R.id.add_class)
     public void onAddClass() {
@@ -80,6 +86,9 @@ public class ClassesActivity extends BaseActivity {
 
         mRecyclerView.setAdapter(mDeckAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ClassesActivity.this));
+
+        // refresh
+        mSwipeRefresh.setOnRefreshListener(onRefreshListener);
     }
 
     private List<Deck> getData() {
