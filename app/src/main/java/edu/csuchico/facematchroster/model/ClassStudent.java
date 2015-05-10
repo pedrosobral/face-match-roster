@@ -1,5 +1,8 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
@@ -8,8 +11,13 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  * Created by Pedro Henrique on 5/5/15 - 1:09 PM.
  */
 @DynamoDBTable(tableName = "class_student")
-public class ClassStudent {
+@Table(name = "ClassStudent")
+public class ClassStudent extends Model {
+
+    @Column(name = "class_id")
     private String mClassId;
+
+    @Column(name = "student_id")
     private String mStudentId;
 
     public ClassStudent() {
