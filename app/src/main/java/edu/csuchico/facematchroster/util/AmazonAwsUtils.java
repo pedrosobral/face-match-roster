@@ -91,6 +91,15 @@ public class AmazonAwsUtils {
                 + BUCKET_NAME + "/" + SCHOOL_NAME_FOLDER + getPhotoFileName(context);
     }
 
+
+    /**
+     *  Use case of this method:
+     *  final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
+     *  PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
+     *  .getAllClasses(this, ClassModel.class, instructorId);
+     *  It will be useful when synchronize user, if he/she already exist in the database/cognito
+     * @param <T>
+     */
     public static class queryCognito<T> {
 
         public PaginatedScanList<T> getAllClasses(Context context, final Class<T> aClass, String primaryKey) {
