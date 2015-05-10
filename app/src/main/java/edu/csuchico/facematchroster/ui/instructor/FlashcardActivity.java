@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
@@ -139,8 +140,14 @@ public class FlashcardActivity extends BaseActivity {
                 .where("class_id = ?", id)
                 .executeSingle();
 
-        if (studentList != null && !isDataBaseUpdate()) {
+        // TODO: should save cards on database and verify when
+        // is necessary to update form the dynamoDB
+        if (studentList != null /* && !isDataBaseUpdate(deck)*/) {
             Iterator it = studentList.iterator();
+
+            // clear database
+            new Delete().from(Card.class).where("Id != null").execute();
+
             while (it.hasNext()) {
                 Student student = (Student) it.next();
                 Card card = new Card(
@@ -157,11 +164,12 @@ public class FlashcardActivity extends BaseActivity {
         return deck.cards();
     }
 
-    private boolean isDataBaseUpdate() {
-        int count = new Select().all().from(Card.class).count();
+    private boolean isDataBaseUpdate(Deck deck) {
+        LOGD(TAG, "isDataUpdate id = " + deck.getClassId());
+        List<Card> countList = deck.cards();
 
-        LOGD(TAG, "count = " + count + " list: " + studentList.size());
-        return count == studentList.size();
+        LOGD(TAG, "count = " + countList.size() + " list: " + studentList.size());
+        return countList.size() == studentList.size();
     }
 
     private void getStudents(List<String> emails) {
