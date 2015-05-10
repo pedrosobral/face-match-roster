@@ -8,9 +8,16 @@ import android.preference.PreferenceManager;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
+
+import java.util.concurrent.ExecutionException;
 
 import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.ClassStudent;
@@ -21,7 +28,6 @@ import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class AmazonAwsUtils {
-    static final String TAG = makeLogTag(AccountUtils.class);
     /**
      * For Amazon AWS Utils
      */
@@ -29,7 +35,7 @@ public class AmazonAwsUtils {
     public static final String BUCKET_NAME = "allschools";
     public static final String SCHOOL_NAME_FOLDER = "csuchico/";
     public static final String PREFIX_S3_PHOTO_LINK = "https://s3-us-west-2.amazonaws.com/";
-
+    static final String TAG = makeLogTag(AccountUtils.class);
     private static final String PREFIX_PREF_PHOTO_FILENAME = "photo_filename_";
     public static CognitoCachingCredentialsProvider sCredProvider;
     public static DynamoDBMapper sDynamoDBMapper;
@@ -85,6 +91,47 @@ public class AmazonAwsUtils {
                 + BUCKET_NAME + "/" + SCHOOL_NAME_FOLDER + getPhotoFileName(context);
     }
 
+
+    /**
+     *  Use case of this method:
+     *  final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
+     *  PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
+     *  .getAllClasses(this, ClassModel.class, instructorId);
+     *  It will be useful when synchronize user, if he/she already exist in the database/cognito
+     * @param <T>
+     */
+    public static class queryCognito<T> {
+
+        public PaginatedScanList<T> getAllClasses(Context context, final Class<T> aClass, String primaryKey) {
+
+            final DynamoDBMapper mapper = getDynamoDBMapper(context);
+            final Condition rangeKeyCondition = new Condition()
+                    .withComparisonOperator(ComparisonOperator.EQ)
+                    .withAttributeValueList(new AttributeValue().withS(primaryKey));
+
+            final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                    .withFilterConditionEntry("instructor_id", rangeKeyCondition);
+
+            AsyncTask<Void, Void, PaginatedScanList<T>> task = new AsyncTask<Void, Void, PaginatedScanList<T>>() {
+                @Override
+                protected PaginatedScanList<T> doInBackground(Void... voids) {
+                    return mapper.scan(aClass, scanExpression);
+                }
+            };
+
+            PaginatedScanList<T> result = null;
+            try {
+                result = task.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+    }
+
     /**
      * Created by Pedro Henrique on 5/1/15 - 7:26 PM.
      */
@@ -108,10 +155,6 @@ public class AmazonAwsUtils {
 
         public static SaveToCognitoHelper saveToCognitoWithoutDialog(Context mContext, OnCognitoResult mResult) {
             return new SaveToCognitoHelper(mContext, null, mResult);
-        }
-
-        public interface OnCognitoResult {
-            void saveToCognitoResult(boolean result);
         }
 
         @Override
@@ -170,6 +213,10 @@ public class AmazonAwsUtils {
             }
 
             return model;
+        }
+
+        public interface OnCognitoResult {
+            void saveToCognitoResult(boolean result);
         }
 
     }

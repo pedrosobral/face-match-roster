@@ -1,37 +1,53 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Pedro Henrique on 4/25/15 - 7:51 PM.
  */
-public class Deck {
 
-    private String mId;
+@Table(name = "Decks")
+public class Deck extends Model {
 
+    @Column(name = "tile")
     private String mTitle;
 
-    private ArrayList<Card> mDeck;
+    @Column(name = "class_id")
+    private String classId;
 
+    @Column(name = "creation_date")
     private Date mCreationDate;
 
+    @Column(name = "update_date")
     private Date mUpdateDate;
 
-    public Deck(String mId, String mTitle, ArrayList<Card> mDeck, Date mCreationDate, Date mUpdateDate) {
-        this.mId = mId;
+    // This method is optional, does not affect the foreign key creation.
+    public List<Card> cards() {
+        return getMany(Card.class, "Deck");
+    }
+
+    public Deck() {
+    }
+
+    public Deck(String mTitle, String classId, Date mCreationDate, Date mUpdateDate) {
         this.mTitle = mTitle;
-        this.mDeck = mDeck;
+        this.classId = classId;
         this.mCreationDate = mCreationDate;
         this.mUpdateDate = mUpdateDate;
     }
 
-    public String getId() {
-        return mId;
+    public String getClassId() {
+        return classId;
     }
 
-    public void setId(String mId) {
-        this.mId = mId;
+    public void setClassId(String classId) {
+        this.classId = classId;
     }
 
     public String getTitle() {
@@ -40,14 +56,6 @@ public class Deck {
 
     public void setTitle(String mTitle) {
         this.mTitle = mTitle;
-    }
-
-    public ArrayList<Card> getDeck() {
-        return mDeck;
-    }
-
-    public void setDeck(ArrayList<Card> mDeck) {
-        this.mDeck = mDeck;
     }
 
     public Date getCreationDate() {

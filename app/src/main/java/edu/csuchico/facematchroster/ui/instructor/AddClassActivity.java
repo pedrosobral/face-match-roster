@@ -36,6 +36,8 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     @InjectView(R.id.school_term_spinner)
     Spinner mSpinner;
 
+    private ClassModel newClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +84,7 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     }
 
     private void save() {
-        ClassModel newClass = new ClassModel(
+         newClass = new ClassModel(
                 mClassCode.getText().toString(),
                 mClassName.getText().toString(),
                 AccountUtils.getActiveAccountName(this),
@@ -109,6 +111,12 @@ public class AddClassActivity extends BaseActivity implements AmazonAwsUtils.Sav
     public void saveToCognitoResult(boolean result) {
         if (result) {
             Toast.makeText(AddClassActivity.this, "Class saved", Toast.LENGTH_LONG).show();
+
+            // save class on database
+            newClass.save();
+            // set result OK
+            setResult(RESULT_OK, getIntent());
+
             finish();
             ActivityTransitionAnimation.slide(AddClassActivity.this, ActivityTransitionAnimation.Direction.LEFT);
         } else {

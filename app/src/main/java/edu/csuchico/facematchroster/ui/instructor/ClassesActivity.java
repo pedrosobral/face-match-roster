@@ -1,8 +1,8 @@
 package edu.csuchico.facematchroster.ui.instructor;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -13,19 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.Condition;
+import com.activeandroid.query.Select;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,22 +31,21 @@ import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
-import edu.csuchico.facematchroster.util.AccountUtils;
-import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class ClassesActivity extends BaseActivity {
-    private static final String TAG = makeLogTag(ClassesActivity.class);
-
     public static final String CLASS_ID = "class_id";
     public static final String ClASS_NAME = "class_name";
-
+    private static final String TAG = makeLogTag(ClassesActivity.class);
+    private static final int ADD_CLASS_REQUEST = 1;
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @InjectView(R.id.fab)
     FloatingActionsMenu mFloatActionMenu;
+    @InjectView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
 
     private DeckAdapter mDeckAdapter;
 
@@ -61,7 +54,7 @@ public class ClassesActivity extends BaseActivity {
         public void onItemClick(Deck deck) {
             LOGD(TAG, "onItemClick: " + deck.getTitle());
             Intent intent = new Intent(ClassesActivity.this, FlashcardActivity.class);
-            intent.putExtra(CLASS_ID, deck.getId());
+            intent.putExtra(CLASS_ID, deck.getClassId());
             intent.putExtra(ClASS_NAME, deck.getTitle());
             startActivity(intent);
         }
@@ -71,10 +64,31 @@ public class ClassesActivity extends BaseActivity {
             LOGD(TAG, "onIconClick: " + ((TextView) view).getText());
         }
     };
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            mDeckAdapter.updateData(getData());
+            // dismiss swipeRefresh layout
+            mSwipeRefresh.setRefreshing(false);
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LOGD(TAG, "onActivityResult()");
+        if (requestCode == ADD_CLASS_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                LOGD(TAG, "onActivityResult: updating...");
+                // get the new class added from database
+                mDeckAdapter.updateData(getData());
+            }
+        }
+    }
 
     @OnClick(R.id.add_class)
     public void onAddClass() {
-        startActivity(new Intent(ClassesActivity.this, AddClassActivity.class));
+        startActivityForResult(new Intent(ClassesActivity.this, AddClassActivity.class),
+                ADD_CLASS_REQUEST);
         mFloatActionMenu.collapse();
     }
 
@@ -88,48 +102,31 @@ public class ClassesActivity extends BaseActivity {
 
         mRecyclerView.setAdapter(mDeckAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ClassesActivity.this));
+
+        // refresh
+        mSwipeRefresh.setOnRefreshListener(onRefreshListener);
     }
 
     private List<Deck> getData() {
 
-        final DynamoDBMapper mapper = AmazonAwsUtils.getDynamoDBMapper(ClassesActivity.this);
-
-        final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
-
-        final Condition rangeKeyCondition = new Condition()
-                .withComparisonOperator(ComparisonOperator.EQ)
-                .withAttributeValueList(new AttributeValue().withS(instructorId));
-
-        final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterConditionEntry("instructor_id", rangeKeyCondition);
-
-        AsyncTask<Void, Void, PaginatedScanList<ClassModel>> task = new AsyncTask<Void, Void, PaginatedScanList<ClassModel>>() {
-            @Override
-            protected PaginatedScanList<ClassModel> doInBackground(Void... voids) {
-                return mapper.scan(ClassModel.class, scanExpression); //query(ClassModel.class, queryExpression);
-            }
-        };
-
-        PaginatedScanList<ClassModel> result = null;
-        try {
-            result = task.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
         List<Deck> listDeck = new ArrayList<>();
-        if (result != null) {
-            Iterator it = result.iterator();
-            ClassModel aClass;
-            while (it.hasNext()) {
-                aClass = (ClassModel) it.next();
-                listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
-            }
+        Iterator it = getDataFromDataBase().iterator();
+        ClassModel aClass;
+        while (it.hasNext()) {
+            aClass = (ClassModel) it.next();
+            Deck deck = new Deck(aClass.getName(), aClass.getClassId(), null, null);
+            listDeck.add(deck);
+            deck.save(); // save deck database
+            aClass.save();
         }
 
         return listDeck;
+    }
+
+    private List<ClassModel> getDataFromDataBase() {
+        return new Select()
+                .from(ClassModel.class)
+                .execute();
     }
 
 
@@ -174,6 +171,11 @@ public class ClassesActivity extends BaseActivity {
             mDataModel = data;
         }
 
+        public void updateData(List<Deck> data) {
+            mDataModel = data;
+            notifyDataSetChanged();
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_item, parent, false);
@@ -185,7 +187,7 @@ public class ClassesActivity extends BaseActivity {
             Deck deck = mDataModel.get(position);
 
             holder.mTextView.setText(deck.getTitle());
-            holder.mIcon.setText(Integer.valueOf(deck.getId()).toString());
+            holder.mIcon.setText(Integer.valueOf(deck.getClassId()).toString());
 
             holder.onBind(deck);
         }

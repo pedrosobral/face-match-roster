@@ -1,5 +1,7 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexHashKey;
@@ -10,10 +12,16 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  */
 
 @DynamoDBTable(tableName = "instructor")
+@Table(name = "Instructor")
 public class Instructor {
 
+    @Column(name = "instructor_id")
     private String mEmail; // = id
+
+    @Column(name = "name")
     private String mName;
+
+    @Column(name = "timestamp")
     private long mTimestamp;
 
     public Instructor() {
