@@ -66,7 +66,9 @@ public class ClassesActivity extends BaseActivity {
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-
+            mDeckAdapter.updateData(getData());
+            // dismiss swipeRefresh layout
+            mSwipeRefresh.setRefreshing(false);
         }
     };
 
@@ -92,11 +94,6 @@ public class ClassesActivity extends BaseActivity {
     }
 
     private List<Deck> getData() {
-
-//        final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
-//
-//        PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
-//                .getAllClasses(this, ClassModel.class, instructorId);
 
         List<Deck> listDeck = new ArrayList<>();
         Iterator it = getDataFromDataBase().iterator();
