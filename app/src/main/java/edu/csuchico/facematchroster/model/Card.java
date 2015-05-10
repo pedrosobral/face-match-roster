@@ -19,6 +19,9 @@ public class Card extends Model {
     @Column(name = "name")
     private String mName; // back card
 
+    @Column(name = "Deck")
+    private Deck mDeck;
+
     // the current e-factor for this card
     @Column(name = "efactor")
     private float mEFactor = 2.5f;
@@ -32,14 +35,22 @@ public class Card extends Model {
     public Card() {
     }
 
-    public Card(String mPhoto, String mName, float mEFactor, Date mCreationDate, Date mUpdateDate) {
+    public Card(String mPhoto, String mName, Deck mDeck, float mEFactor, Date mCreationDate, Date mUpdateDate) {
         this.mPhoto = mPhoto;
         this.mName = mName;
+        this.mDeck = mDeck;
         this.mEFactor = mEFactor;
         this.mCreationDate = mCreationDate;
         this.mUpdateDate = mUpdateDate;
     }
 
+    public Deck getDeck() {
+        return mDeck;
+    }
+
+    public void setDeck(Deck mDeck) {
+        this.mDeck = mDeck;
+    }
 
     public String getPhoto() {
         return mPhoto;
