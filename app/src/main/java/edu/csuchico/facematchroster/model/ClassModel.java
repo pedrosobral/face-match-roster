@@ -1,5 +1,7 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
@@ -11,13 +13,28 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  */
 
 @DynamoDBTable(tableName = "csuchico_classes")
+@Table(name = "Classes")
 public class ClassModel {
+
+    @Column(name = "class_id")
     private String mClassId;        // == class code
+
+    @Column(name = "name")
     private String mName;           // class name
+
+    @Column(name = "instructor_id")
     private String mInstructorId;   // == instructor email
+
+    @Column(name = "number")
     private String mNumber;         // class number
+
+    @Column(name = "section")
     private String mSection;        // section
+
+    @Column(name = "term")
     private String mTerm;           // term spring 2015...
+
+    @Column(name = "timestamp")
     private long mTimeStamp;
 
     public ClassModel() {
