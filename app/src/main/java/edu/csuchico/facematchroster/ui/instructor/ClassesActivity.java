@@ -158,6 +158,11 @@ public class ClassesActivity extends BaseActivity {
             mDataModel = data;
         }
 
+        public void updateData(List<Deck> data) {
+            mDataModel = data;
+            notifyDataSetChanged();
+        }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_item, parent, false);
