@@ -1,7 +1,6 @@
 package edu.csuchico.facematchroster.ui.instructor;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,19 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -44,11 +37,9 @@ import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class ClassesActivity extends BaseActivity {
-    private static final String TAG = makeLogTag(ClassesActivity.class);
-
     public static final String CLASS_ID = "class_id";
     public static final String ClASS_NAME = "class_name";
-
+    private static final String TAG = makeLogTag(ClassesActivity.class);
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @InjectView(R.id.fab)
@@ -92,32 +83,10 @@ public class ClassesActivity extends BaseActivity {
 
     private List<Deck> getData() {
 
-        final DynamoDBMapper mapper = AmazonAwsUtils.getDynamoDBMapper(ClassesActivity.this);
-
         final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
 
-        final Condition rangeKeyCondition = new Condition()
-                .withComparisonOperator(ComparisonOperator.EQ)
-                .withAttributeValueList(new AttributeValue().withS(instructorId));
-
-        final DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterConditionEntry("instructor_id", rangeKeyCondition);
-
-        AsyncTask<Void, Void, PaginatedScanList<ClassModel>> task = new AsyncTask<Void, Void, PaginatedScanList<ClassModel>>() {
-            @Override
-            protected PaginatedScanList<ClassModel> doInBackground(Void... voids) {
-                return mapper.scan(ClassModel.class, scanExpression); //query(ClassModel.class, queryExpression);
-            }
-        };
-
-        PaginatedScanList<ClassModel> result = null;
-        try {
-            result = task.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
+                .getAllClasses(this, ClassModel.class, instructorId);
 
         List<Deck> listDeck = new ArrayList<>();
         if (result != null) {
@@ -126,6 +95,7 @@ public class ClassesActivity extends BaseActivity {
             while (it.hasNext()) {
                 aClass = (ClassModel) it.next();
                 listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
+                aClass.save();
             }
         }
 
