@@ -13,7 +13,7 @@ import java.util.Date;
 @Table(name = "Cards")
 public class Card extends Model {
 
-    @Column(name = "photo")
+    @Column(name = "photo", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private String mPhoto; // front card
 
     @Column(name = "name")
