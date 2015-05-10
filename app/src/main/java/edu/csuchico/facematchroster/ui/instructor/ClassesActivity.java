@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -83,23 +84,27 @@ public class ClassesActivity extends BaseActivity {
 
     private List<Deck> getData() {
 
-        final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
-
-        PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
-                .getAllClasses(this, ClassModel.class, instructorId);
+//        final String instructorId = AccountUtils.getActiveAccountName(ClassesActivity.this);
+//
+//        PaginatedScanList<ClassModel> result = new AmazonAwsUtils.queryCognito<ClassModel>()
+//                .getAllClasses(this, ClassModel.class, instructorId);
 
         List<Deck> listDeck = new ArrayList<>();
-        if (result != null) {
-            Iterator it = result.iterator();
+            Iterator it = getDataFromDataBase().iterator();
             ClassModel aClass;
             while (it.hasNext()) {
                 aClass = (ClassModel) it.next();
                 listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
                 aClass.save();
-            }
         }
 
         return listDeck;
+    }
+
+    private List<ClassModel> getDataFromDataBase() {
+        return new Select()
+                .from(ClassModel.class)
+                .execute();
     }
 
 
