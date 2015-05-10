@@ -114,7 +114,7 @@ public class ClassesActivity extends BaseActivity {
         ClassModel aClass;
         while (it.hasNext()) {
             aClass = (ClassModel) it.next();
-            listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
+            listDeck.add( new Deck(aClass.getName(), aClass.getNumber(), null, null));
             aClass.save();
         }
 
@@ -185,7 +185,7 @@ public class ClassesActivity extends BaseActivity {
             Deck deck = mDataModel.get(position);
 
             holder.mTextView.setText(deck.getTitle());
-            holder.mIcon.setText(Integer.valueOf(deck.getId()).toString());
+            holder.mIcon.setText(Integer.valueOf(deck.getClassId()).toString());
 
             holder.onBind(deck);
         }
