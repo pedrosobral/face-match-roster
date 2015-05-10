@@ -1,5 +1,6 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
@@ -12,9 +13,9 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  * Created by aliansari on 4/30/15.
  */
 
-@DynamoDBTable(tableName = "csuchico_classes")
 @Table(name = "Classes")
-public class ClassModel {
+@DynamoDBTable(tableName = "csuchico_classes")
+public class ClassModel extends Model {
 
     @Column(name = "class_id")
     private String mClassId;        // == class code
@@ -38,6 +39,7 @@ public class ClassModel {
     private long mTimeStamp;
 
     public ClassModel() {
+        super();
     }
 
     public ClassModel(String mClassId, String mName, String mInstructorId, String mNumber, String mSection, String mTerm, long mTimeStamp) {
