@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
 
@@ -38,15 +39,14 @@ import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
 public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(ListClasses.class);
-
+    private final ArrayList<String> classes_id = new ArrayList<>();
+    private final ArrayList<String> classes_enrolled = new ArrayList<>();
     @InjectView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @InjectView(R.id.swipeRefresh)
     SwipeRefreshLayout mSwipeRefresh;
-
     private ClassAdapter mClassAdapter;
     private LinearLayoutManager mLinearLayoutManager;
-
     private ClassAdapter.OnItemClickListener onItemClickListener = new ClassAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(ClassModel classModel) {
@@ -60,7 +60,7 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
 
         @Override
         public void onEnrollClick(View view, ClassModel classModel) {
-            ((Button) view).setText("Enrolled");
+//            ((Button) view).setText("Enrolled");
             saveStudentOnClass(classModel);
         }
     };
@@ -68,11 +68,14 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
         @Override
         public void onRefresh() {
             // update data and refresh
-            mClassAdapter.updateData(getData());
+            List<ClassModel> classModels = getData();
+
+            mClassAdapter.updateData(classModels, classes_enrolled);
             // dismiss swipeRefresh layout
             mSwipeRefresh.setRefreshing(false);
         }
     };
+
 
     private void saveStudentOnClass(ClassModel aClass) {
 
@@ -81,6 +84,9 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
                 AccountUtils.getActiveAccountName(ListClasses.this) // student id
         );
 
+        // TODO: should be saved after save on cognito
+        classStudent.save(); // save class on database
+
         AmazonAwsUtils.SaveToCognitoHelper saveToCognitoHelper = AmazonAwsUtils
                 .SaveToCognitoHelper
                 .saveToCognitoWithoutDialog(ListClasses.this, ListClasses.this);
@@ -88,9 +94,43 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
         saveToCognitoHelper.execute(classStudent);
     }
 
+    private void updateButtonState(List<ClassModel> classes) {
+        LOGD(TAG, "updateButtonState");
+
+        // get all class student enrolled on SQLite
+        final List<ClassStudent> list = new Select().all().from(ClassStudent.class).execute();
+
+        if (list != null && list.size() == 0)
+            return;
+
+        final Iterator it = classes.iterator();
+        // get all classes id from DynamoDB
+        while (it.hasNext()) {
+            ClassModel classModel = (ClassModel) it.next();
+            classes_id.add(classModel.getClassId());
+            LOGD(TAG, "dynamo Class_id: " + classModel.getClassId());
+        }
+
+        final Iterator ids = list.iterator();
+        // compare each class id form DynamoDB with ids student enrolled
+        while (ids.hasNext()) {
+            String id = ((ClassStudent) ids.next()).getClassId();
+            LOGD(TAG, "1 sql class_id: " + id);
+            if (classes_id.contains(id)) {
+                LOGD(TAG, "student enrolled class_id: " + id);
+                classes_id.remove(id);
+                classes_enrolled.add(id);
+            }
+        }
+        // class_id contain all classes_id student enrolled
+    }
+
     @Override
     public void saveToCognitoResult(boolean result) {
         if (result) {
+            List<ClassModel> classModels = getData();
+            mClassAdapter.updateData(classModels, classes_enrolled);
+
             Toast.makeText(ListClasses.this, "Enrolled", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(ListClasses.this, "Can't enroll", Toast.LENGTH_SHORT).show();
@@ -103,7 +143,9 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
         setContentView(R.layout.activity_list_classes);
         ButterKnife.inject(this);
 
-        mClassAdapter = new ClassAdapter(getData());
+        List<ClassModel> classModels = getData();
+
+        mClassAdapter = new ClassAdapter(classModels, classes_enrolled);
         mClassAdapter.setOnItemClickListener(onItemClickListener);
 
         mRecyclerView.setAdapter(mClassAdapter);
@@ -144,8 +186,11 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
             while (it.hasNext()) {
                 classModel = (ClassModel) it.next();
                 listClasses.add(classModel);
+//                classModel.save(); // save class on database
             }
         }
+
+        updateButtonState(list);
 
         return listClasses;
     }
@@ -178,13 +223,16 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
 
         private OnItemClickListener mOnItemClickListener;
         private List<ClassModel> mDataModel = Collections.emptyList();
+        private ArrayList<String> classesEnrolled;
 
-        public ClassAdapter(List<ClassModel> data) {
+        public ClassAdapter(List<ClassModel> data, ArrayList<String> aClassesEnrolled) {
             mDataModel = data;
+            classesEnrolled = aClassesEnrolled;
         }
 
-        public void updateData(List<ClassModel> data) {
+        public void updateData(List<ClassModel> data, ArrayList<String> aClassesEnrolled) {
             mDataModel = data;
+            classesEnrolled = aClassesEnrolled;
             notifyDataSetChanged();
         }
 
@@ -200,6 +248,14 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
 
             holder.mTextView.setText(classModel.getName());
             holder.mIcon.setText(classModel.getNumber());
+
+            String class_id = classModel.getClassId();
+            LOGD(TAG, "1 onBindView: " + class_id);
+            if (classesEnrolled != null && classesEnrolled.contains(class_id)) {
+                LOGD(TAG, "2 onBindView: " + class_id);
+                holder.enrollButton.setText("Enrolled");
+                classesEnrolled.remove(class_id);
+            }
 
             holder.onBind(classModel);
         }

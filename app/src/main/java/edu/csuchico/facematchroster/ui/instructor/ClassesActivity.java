@@ -29,8 +29,11 @@ import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
 import edu.csuchico.facematchroster.model.ClassModel;
 import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.BaseActivity;
+import edu.csuchico.facematchroster.ui.LoginActivity;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
+import edu.csuchico.facematchroster.util.AccountUtils;
+import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
@@ -97,7 +100,14 @@ public class ClassesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
         ButterKnife.inject(this);
-        mDeckAdapter = new DeckAdapter(getData());
+
+        // first time login or user cleared data and had to login again
+        if (getIntent().getBooleanExtra(LoginActivity.FROM_LOGIN_ACTIVITY, false)) {
+            mDeckAdapter = new DeckAdapter(getDataFromCognito());
+        } else {
+            mDeckAdapter = new DeckAdapter(getData());
+        }
+
         mDeckAdapter.setOnItemClickListener(onItemClickListener);
 
         mRecyclerView.setAdapter(mDeckAdapter);
@@ -111,6 +121,26 @@ public class ClassesActivity extends BaseActivity {
 
         List<Deck> listDeck = new ArrayList<>();
         Iterator it = getDataFromDataBase().iterator();
+        ClassModel aClass;
+        while (it.hasNext()) {
+            aClass = (ClassModel) it.next();
+            Deck deck = new Deck(aClass.getName(), aClass.getClassId(), null, null);
+            listDeck.add(deck);
+            deck.save(); // save deck database
+            aClass.save();
+        }
+
+        return listDeck;
+    }
+
+    private List<Deck> getDataFromCognito() {
+
+        List<Deck> listDeck = new ArrayList<>();
+
+        Iterator it = new AmazonAwsUtils.queryCognito<ClassModel>()
+                .getAllClasses(this, ClassModel.class, AccountUtils.getActiveAccountName(this))
+                .iterator();
+
         ClassModel aClass;
         while (it.hasNext()) {
             aClass = (ClassModel) it.next();

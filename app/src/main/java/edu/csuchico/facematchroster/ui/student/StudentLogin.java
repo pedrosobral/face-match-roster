@@ -152,7 +152,7 @@ public class StudentLogin extends BaseActivity implements AmazonAwsUtils.SaveToC
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             dialog.dismiss();
-                            startActivity(new Intent(StudentLogin.this, ClassesActivity.class));
+                            startActivity(new Intent(StudentLogin.this, ListClasses.class));
                             finish();
                         }
                     })

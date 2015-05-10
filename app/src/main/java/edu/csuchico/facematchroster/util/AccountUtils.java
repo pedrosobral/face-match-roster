@@ -41,6 +41,7 @@ public class AccountUtils {
     private static final String PREF_ACTIVE_ACCOUNT = "chosen_account";
     private static final String PREFIX_PREF_PLUS_PROFILE_ID = "plus_profile_id_";
     private static final String PREFIX_PREF_PLUS_NAME = "plus_name_";
+    private static final String IS_INSTRUCTOR = "is_instructor";
 
     static {
         StringBuilder sb = new StringBuilder();
@@ -88,6 +89,16 @@ public class AccountUtils {
 
     private static String makeAccountSpecificPrefKey(String accountName, String prefix) {
         return prefix + accountName;
+    }
+
+    public static boolean isInstructor(final Context context) {
+        SharedPreferences sp = getSharedPreferences(context);
+        return sp.getBoolean(IS_INSTRUCTOR, false);
+    }
+
+    public static void setInstructorAccount(final Context context, final boolean type) {
+        SharedPreferences sp = getSharedPreferences(context);
+        sp.edit().putBoolean(IS_INSTRUCTOR, type).apply();
     }
 
     public static boolean hasPlusInfo(final Context context, final String accountName) {
