@@ -24,3 +24,4 @@
 * [Material Dialogs](https://github.com/afollestad/material-dialogs)
 * [Material Design Android Library](https://github.com/navasmdc/MaterialDesignLibrary)
 * [FloatingActionButton](https://github.com/futuresimple/android-floating-action-button)
+* [ActiveAndroid](https://github.com/pardom/ActiveAndroid)
