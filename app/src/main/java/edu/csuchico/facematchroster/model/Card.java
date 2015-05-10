@@ -1,24 +1,36 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.Date;
 
 /**
  * Created by sobral on 4/25/15.
  */
-public class Card {
 
-    private int mId;
+@Table(name = "Cards")
+public class Card extends Model {
 
+    @Column(name = "photo")
     private String mPhoto; // front card
 
+    @Column(name = "name")
     private String mName; // back card
 
     // the current e-factor for this card
+    @Column(name = "efactor")
     private float mEFactor = 2.5f;
 
+    @Column(name = "creation_date")
     private Date mCreationDate;
 
+    @Column(name = "update_date")
     private Date mUpdateDate;
+
+    public Card() {
+    }
 
     public Card(String mPhoto, String mName, float mEFactor, Date mCreationDate, Date mUpdateDate) {
         this.mPhoto = mPhoto;
@@ -28,13 +40,6 @@ public class Card {
         this.mUpdateDate = mUpdateDate;
     }
 
-    public int getId() {
-        return mId;
-    }
-
-    public void setId(int mId) {
-        this.mId = mId;
-    }
 
     public String getPhoto() {
         return mPhoto;
