@@ -2,6 +2,7 @@ package edu.csuchico.facematchroster.ui.instructor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.activeandroid.query.Select;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.ArrayList;
@@ -31,8 +31,6 @@ import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.ui.student.ListClasses;
 import edu.csuchico.facematchroster.ui.student.StudentLogin;
-import edu.csuchico.facematchroster.util.AccountUtils;
-import edu.csuchico.facematchroster.util.AmazonAwsUtils;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
@@ -45,6 +43,8 @@ public class ClassesActivity extends BaseActivity {
     RecyclerView mRecyclerView;
     @InjectView(R.id.fab)
     FloatingActionsMenu mFloatActionMenu;
+    @InjectView(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefresh;
 
     private DeckAdapter mDeckAdapter;
 
@@ -90,12 +90,12 @@ public class ClassesActivity extends BaseActivity {
 //                .getAllClasses(this, ClassModel.class, instructorId);
 
         List<Deck> listDeck = new ArrayList<>();
-            Iterator it = getDataFromDataBase().iterator();
-            ClassModel aClass;
-            while (it.hasNext()) {
-                aClass = (ClassModel) it.next();
-                listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
-                aClass.save();
+        Iterator it = getDataFromDataBase().iterator();
+        ClassModel aClass;
+        while (it.hasNext()) {
+            aClass = (ClassModel) it.next();
+            listDeck.add(new Deck(aClass.getClassId(), aClass.getName(), null, null, null));
+            aClass.save();
         }
 
         return listDeck;
