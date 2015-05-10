@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.activeandroid.query.Select;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.gc.materialdesign.views.ButtonRectangle;
@@ -21,8 +22,12 @@ import java.util.concurrent.ExecutionException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import edu.csuchico.facematchroster.R;
+import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
+import edu.csuchico.facematchroster.model.Card;
 import edu.csuchico.facematchroster.model.ClassStudent;
+import edu.csuchico.facematchroster.model.Deck;
 import edu.csuchico.facematchroster.model.Student;
 import edu.csuchico.facematchroster.ui.BaseActivity;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
@@ -46,15 +51,19 @@ public class FlashcardActivity extends BaseActivity {
     TextView mFlashcardName;
 
     private LinearLayout mFlipCardLayout;
+    private String mName;
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             showAnswerButtons();
         }
     };
-    private String mName;
+    private List<Student> studentList = new ArrayList<>();
+    private List<Card> mCardList;
+    private int nunCards = 0;
 
-    protected void showAnswerButtons() {
+    @OnClick(R.id.flip_card)
+    public void showAnswerButtons() {
         mFlipCardLayout.setVisibility(View.GONE);
 
         mFlashcardName.setVisibility(View.VISIBLE);
@@ -66,6 +75,21 @@ public class FlashcardActivity extends BaseActivity {
         mFlashcardLayoutEase4.setVisibility(View.VISIBLE);
     }
 
+    @OnClick(R.id.flashcard_layout_ease4)
+    public void onAnswerClicked() {
+
+        mFlashcardName.setVisibility(View.GONE);
+
+        mFlashcardLayoutEase1.setVisibility(View.GONE);
+        mFlashcardLayoutEase2.setVisibility(View.GONE);
+        mFlashcardLayoutEase3.setVisibility(View.GONE);
+        mFlashcardLayoutEase4.setVisibility(View.GONE);
+
+        mFlipCardLayout.setVisibility(View.VISIBLE);
+
+        setNextCard();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,59 +99,103 @@ public class FlashcardActivity extends BaseActivity {
         setTitle(getIntent().getStringExtra(ClassesActivity.ClASS_NAME));
 
         ArrayList<String> emails = getStudentsId();
-        String url = setStudentPhoto(emails);
+        getStudents(emails);
 
         mFlipCardLayout = (LinearLayout) findViewById(R.id.flashcard_layout_flip);
-        findViewById(R.id.flip_card).setOnClickListener(listener);
 
-        LOGD(TAG, "URL S3: " + url);
-        Picasso.with(this)
-                .load(url)
-                .fit()
-                .centerInside()
-                .into(mPhoto);
+        mCardList = updateDeck(getIntent().getStringExtra(ClassesActivity.CLASS_ID));
+
+        setNextCard();
     }
 
-    private String setStudentPhoto(List<String> emails) {
+    /**
+     * TODO: Update eFactor card based on answer
+     */
+    private void setNextCard() {
+
+        if (mCardList != null && nunCards != mCardList.size()) {
+
+            // set name
+            mName = mCardList.get(nunCards).getName();
+
+            // set Photo
+            Picasso.with(this)
+                    .load(mCardList.get(nunCards).getPhoto())
+                    .fit()
+                    .centerInside()
+                    .into(mPhoto);
+
+            nunCards++;
+        } else {
+            finish();
+            ActivityTransitionAnimation.slide(FlashcardActivity.this, ActivityTransitionAnimation.Direction.LEFT);
+        }
+    }
+
+    private List<Card> updateDeck(String id) {
+
+        Deck deck = new Select()
+                .from(Deck.class)
+                .where("class_id = ?", id)
+                .executeSingle();
+
+        if (studentList != null && !isDataBaseUpdate()) {
+            Iterator it = studentList.iterator();
+            while (it.hasNext()) {
+                Student student = (Student) it.next();
+                Card card = new Card(
+                        student.getS3PicLoc(),  // TODO: should be a file?
+                        student.getName(),      // name
+                        deck,                   // deck
+                        (float) 2.5,            // eFactor
+                        null, null);            // Creation and Update Date
+
+                card.save(); // save card on database
+                LOGD(TAG, "updateDeck " + card.getName() + card.getPhoto());
+            }
+        }
+        return deck.cards();
+    }
+
+    private boolean isDataBaseUpdate() {
+        int count = new Select().all().from(Card.class).count();
+
+        LOGD(TAG, "count = " + count + " list: " + studentList.size());
+        return count == studentList.size();
+    }
+
+    private void getStudents(List<String> emails) {
         final DynamoDBMapper mapper = AmazonAwsUtils.getDynamoDBMapper(FlashcardActivity.this);
 
-        Student hashKeyValeus = new Student();
-        hashKeyValeus.setUserid(emails.get(0));
+        Student hashKeyValues = new Student();
+        Iterator it = emails.iterator();
 
-        final DynamoDBQueryExpression<Student> queryExpression = new DynamoDBQueryExpression<Student>()
-                .withHashKeyValues(hashKeyValeus);
+        while (it.hasNext()) {
 
-        AsyncTask<Void, Void, List> task = new AsyncTask<Void, Void, List>() {
-            @Override
-            protected List doInBackground(Void... voids) {
-                return mapper.query(Student.class, queryExpression);
+            hashKeyValues.setUserid(it.next().toString());
+
+            final DynamoDBQueryExpression<Student> queryExpression = new DynamoDBQueryExpression<Student>()
+                    .withHashKeyValues(hashKeyValues);
+
+            AsyncTask<Void, Void, List> task = new AsyncTask<Void, Void, List>() {
+                @Override
+                protected List doInBackground(Void... voids) {
+                    return mapper.query(Student.class, queryExpression);
+                }
+            };
+
+            List<Student> list = null;
+            try {
+                list = task.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-        };
 
-        List<Student> studentList = null;
-
-        try {
-            studentList = task.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            if (list != null && list.size() != 0)
+                studentList.add(list.get(0));
         }
-
-        String url = null;
-        if (studentList != null) {
-            LOGD(TAG, "studentsList != null");
-            Iterator it = studentList.iterator();
-            Student student;
-            while (it.hasNext()) {
-                student = (Student) it.next();
-                LOGD(TAG, "URL S3: " + student.getS3PicLoc());
-                url = student.getS3PicLoc();
-                mName = student.getName();
-            }
-        }
-
-        return url;
     }
 
     private ArrayList<String> getStudentsId() {
