@@ -1,39 +1,55 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.Date;
 
 /**
  * Created by sobral on 4/25/15.
  */
-public class Card {
 
-    private int mId;
+@Table(name = "Cards")
+public class Card extends Model {
 
+    @Column(name = "photo", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private String mPhoto; // front card
 
+    @Column(name = "name")
     private String mName; // back card
 
+    @Column(name = "Deck")
+    private Deck mDeck;
+
     // the current e-factor for this card
+    @Column(name = "efactor")
     private float mEFactor = 2.5f;
 
+    @Column(name = "creation_date")
     private Date mCreationDate;
 
+    @Column(name = "update_date")
     private Date mUpdateDate;
 
-    public Card(String mPhoto, String mName, float mEFactor, Date mCreationDate, Date mUpdateDate) {
+    public Card() {
+    }
+
+    public Card(String mPhoto, String mName, Deck mDeck, float mEFactor, Date mCreationDate, Date mUpdateDate) {
         this.mPhoto = mPhoto;
         this.mName = mName;
+        this.mDeck = mDeck;
         this.mEFactor = mEFactor;
         this.mCreationDate = mCreationDate;
         this.mUpdateDate = mUpdateDate;
     }
 
-    public int getId() {
-        return mId;
+    public Deck getDeck() {
+        return mDeck;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setDeck(Deck mDeck) {
+        this.mDeck = mDeck;
     }
 
     public String getPhoto() {

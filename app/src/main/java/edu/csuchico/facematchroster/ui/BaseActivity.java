@@ -1,14 +1,9 @@
 package edu.csuchico.facematchroster.ui;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,19 +19,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.GoogleAuthUtil;
-
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.anim.ActivityTransitionAnimation;
-import edu.csuchico.facematchroster.util.AccountUtils;
-import edu.csuchico.facematchroster.util.LoginAndAuthHelper;
+import edu.csuchico.facematchroster.ui.instructor.AddClassActivity;
+import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
 
-import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
-import static edu.csuchico.facematchroster.util.LogUtils.LOGE;
-import static edu.csuchico.facematchroster.util.LogUtils.LOGW;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelper.Callbacks {
+public class BaseActivity extends AppCompatActivity {
     // symbols for navDrawer items (indices must correspond to array below). This is
     // not a list of items that are necessarily *present* in the Nav Drawer; rather,
     // it's a list of all possible items.
@@ -62,8 +52,6 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
     };
     //    protected static boolean sIsDrawerOpen = false;
     protected int mLastSelectedPosition;
-    // the LoginAndAuthHelper handles signing in to Google Play Services and OAuth
-    private LoginAndAuthHelper mLoginAndAuthHelper;
     private String[] mNavDrawerItems;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -74,7 +62,8 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         public void onDrawerClosed(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerClosed(drawerView);
             // TODO: change title when closed
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
 
         @Override
@@ -90,31 +79,11 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         @Override
         public void onDrawerOpened(View drawerView) {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerOpened(drawerView);
-            getSupportActionBar().setTitle(R.string.toolbar_main_title);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(R.string.toolbar_main_title);
         }
     };
     private Toolbar mActionBarToolbar;
-
-    private Intent mSignInIntent;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        LOGD(TAG, "OnActivityResult" + requestCode);
-
-        if (requestCode == LoginAndAuthHelper.REQUEST_AUTHENTICATE)
-            if (resultCode != RESULT_OK)
-                mSignInIntent = null;
-
-        if (mLoginAndAuthHelper != null)
-            mLoginAndAuthHelper.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        startLoginProcess();
-    }
 
     @Override
     public void onBackPressed() {
@@ -133,101 +102,6 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         return mDrawerToggle;
     }
 
-    /**
-     * Returns the default account on the device. We use the rule that the first account
-     * should be the default. It's arbitrary, but the alternative would be showing an account
-     * chooser popup which wouldn't be a smooth first experience with the app. Since the user
-     * can easily switch the account with the nav drawer, we opted for this implementation.
-     */
-    private String getDefaultAccount() {
-        // Choose first account on device.
-        LOGD(TAG, "Choosing default account (first account on device)");
-        AccountManager am = AccountManager.get(this);
-        Account[] accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-        if (accounts.length == 0) {
-            // No Google accounts on device.
-            LOGW(TAG, "No Google accounts on device; not setting default account.");
-            return null;
-        }
-
-        LOGD(TAG, "Default account is: " + accounts[0].name);
-        return accounts[0].name;
-    }
-
-    private void complainMustHaveGoogleAccount() {
-        LOGD(TAG, "Complaining about missing Google account.");
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.google_account_required_title)
-                .setMessage(R.string.google_account_required_message)
-                .setPositiveButton(R.string.add_account, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        promptAddAccount();
-                    }
-                })
-                .setNegativeButton(R.string.not_now, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .show();
-    }
-
-    private void promptAddAccount() {
-        mSignInIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-        mSignInIntent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[]{"com.google"});
-        startActivityForResult(mSignInIntent, LoginAndAuthHelper.REQUEST_AUTHENTICATE);
-    }
-
-    private void startLoginProcess() {
-        // TODO: need to show all accounts users has
-        LOGD(TAG, "Starting login process.");
-        if (!AccountUtils.hasActiveAccount(this)) {
-            LOGD(TAG, "No active account, attempting to pick a default.");
-            String defaultAccount = getDefaultAccount();
-            if (mSignInIntent == null && defaultAccount == null) {
-                LOGE(TAG, "Failed to pick default account (no accounts). Failing.");
-                complainMustHaveGoogleAccount();
-                return;
-            }
-            LOGD(TAG, "Default to: " + defaultAccount);
-            AccountUtils.setActiveAccount(this, defaultAccount);
-        }
-
-        if (!AccountUtils.hasActiveAccount(this)) {
-            LOGD(TAG, "Can't proceed with login -- no account chosen.");
-            return;
-        } else {
-            LOGD(TAG, "Chosen account: " + AccountUtils.getActiveAccountName(this));
-        }
-
-        String accountName = AccountUtils.getActiveAccountName(this);
-        LOGD(TAG, "Chosen account: " + AccountUtils.getActiveAccountName(this));
-
-        if (mLoginAndAuthHelper != null && mLoginAndAuthHelper.getAccountName().equals(accountName)) {
-            LOGD(TAG, "Helper already set up; simply starting it.");
-            mLoginAndAuthHelper.start();
-            return;
-        }
-
-        LOGD(TAG, "Starting login process with account " + accountName);
-
-        if (mLoginAndAuthHelper != null) {
-            LOGD(TAG, "Tearing down old Helper, was " + mLoginAndAuthHelper.getAccountName());
-            if (mLoginAndAuthHelper.isStarted()) {
-                LOGD(TAG, "Stopping old Helper");
-                mLoginAndAuthHelper.stop();
-            }
-            mLoginAndAuthHelper = null;
-        }
-
-        LOGD(TAG, "Creating and starting new Helper with account: " + accountName);
-        mLoginAndAuthHelper = new LoginAndAuthHelper(this, this, accountName);
-        mLoginAndAuthHelper.start();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -238,15 +112,6 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        LOGD(TAG, "onStop");
-        super.onStop();
-        if (mLoginAndAuthHelper != null) {
-            mLoginAndAuthHelper.stop();
         }
     }
 
@@ -333,24 +198,6 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
         mLastSelectedPosition = NAVDRAWER_ITEM_INVALID;
     }
 
-    @Override
-    public void onPlusInfoLoaded(String accountName) {
-
-    }
-
-    @Override
-    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
-        LOGD(TAG, "onAuthSuccess, account " + accountName + ", newlyAuthenticated=" + newlyAuthenticated);
-    }
-
-    @Override
-    public void onAuthFailure(String accountName) {
-        LOGD(TAG, "Auth failed for account " + accountName);
-        if (mLoginAndAuthHelper != null) {
-            mLoginAndAuthHelper.retryAuthByUserRequest();
-        }
-    }
-
     public static class NavDrawerItemAdapter extends ArrayAdapter<String> {
 
         public NavDrawerItemAdapter(Context context, String[] objects) {
@@ -363,7 +210,7 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
 
             String item = getItem(position);
 
-            View view = null;
+            View view;
             if (item.isEmpty()) {    // separator
                 return inflater.inflate(R.layout.navdrawer_separator, parent, false);
             }
@@ -392,32 +239,32 @@ public class BaseActivity extends AppCompatActivity implements LoginAndAuthHelpe
                     case NAVDRAWER_ITEM_CLASSES:
                         intent = new Intent(getBaseContext(), ClassesActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.LEFT);
 
                         break;
                     case NAVDRAWER_ITEM_ADD_CLASS:
                         intent = new Intent(getBaseContext(), AddClassActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.LEFT);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.LEFT);
                         invalidateLastSelectedPosition();
 
                         break;
                     case NAVDRAWER_ITEM_SETTINGS:
                         intent = new Intent(getBaseContext(), SettingsActivity.class);
                         startActivity(intent);
-                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.FADE);
+                        ActivityTransitionAnimation.slide(BaseActivity.this, ActivityTransitionAnimation.Direction.FADE);
                         invalidateLastSelectedPosition();
 
                         break;
                     case NAVDRAWER_ITEM_HELP:
-                        intent = new Intent(getBaseContext(), HelpActivity.class);
-                        startActivity(intent);
-                        finish();
+//                        intent = new Intent(getBaseContext(), HelpActivity.class);
+//                        startActivity(intent);
+//                        finish();
                         break;
                     case NAVDRAWER_ITEM_FEEDBACK:
-                        intent = new Intent(getBaseContext(), FeedbackActivity.class);
-                        startActivity(intent);
-                        finish();
+//                        intent = new Intent(getBaseContext(), FeedbackActivity.class);
+//                        startActivity(intent);
+//                        finish();
                         break;
                 }
             }

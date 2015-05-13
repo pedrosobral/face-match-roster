@@ -8,27 +8,27 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
+        android:name=".FaceMatchApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.FaceMatch" >
         <activity
-            android:name=".ui.StudentLogin"
+            android:name=".ui.student.StudentLogin"
             android:label="@string/title_activity_student_loggin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ClassesActivity"
+            android:name=".ui.instructor.ClassesActivity"
             android:label="@string/title_activity_classes"
             android:launchMode="singleTask" >
-
         </activity>
         <activity
-            android:name=".ui.AddClassActivity"
+            android:name=".ui.instructor.AddClassActivity"
             android:label="@string/title_activity_add_class" />
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ui.ClassesActivity" >
+            android:parentActivityName=".ui.instructor.ClassesActivity" >
         </activity>
         <activity
             android:name=".ui.FeedbackActivity"
@@ -37,9 +37,9 @@
             android:name=".ui.HelpActivity"
             android:label="@string/title_activity_help" />
         <activity
-            android:name=".ui.FlashcardActivity"
+            android:name=".ui.instructor.FlashcardActivity"
             android:label="@string/title_activity_flash_card"
-            android:parentActivityName=".ui.ClassesActivity" >
+            android:parentActivityName=".ui.instructor.ClassesActivity" >
         </activity>
 
         <!-- Google Play Services -->
@@ -49,13 +49,19 @@
 
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="FaceMatch Roster" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.student.ListClasses"
+            android:label="@string/title_activity_list_classes" >
+        </activity>
+
+        <meta-data android:name="AA_DB_NAME" android:value="facematch.db" />
     </application>
 
 </manifest>

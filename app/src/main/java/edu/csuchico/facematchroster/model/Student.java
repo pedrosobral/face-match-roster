@@ -1,8 +1,10 @@
 package edu.csuchico.facematchroster.model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 
@@ -10,15 +12,42 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
  * Created by aliansari on 4/4/15.
  */
 @DynamoDBTable(tableName = "csuchico_master")
+@Table(name = "Students")
+public class Student extends Model{
 
-public class Student {
+    @Column(name = "user_id")
     private String userid;
+
+    @Column(name = "timestamp")
     private long timestamp;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "mnemonic")
     private String mnemonic;
+
+    @Column(name = "school")
     private String schoolName;
+
+    @Column(name = "photo_location")
     private String s3PicLoc;
+
+    public Student() {
+    }
+
+    public Student(String userid, long timestamp, String name, String email, String mnemonic, String schoolName, String s3PicLoc) {
+        this.userid = userid;
+        this.timestamp = timestamp;
+        this.name = name;
+        this.email = email;
+        this.mnemonic = mnemonic;
+        this.schoolName = schoolName;
+        this.s3PicLoc = s3PicLoc;
+    }
 
     @DynamoDBHashKey(attributeName = "school_userid")
     public String getUserid() {

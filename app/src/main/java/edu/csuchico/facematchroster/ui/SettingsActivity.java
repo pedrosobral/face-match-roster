@@ -24,7 +24,7 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                ActivityTransitionAnimation.slide(SettingsActivity.this, ActivityTransitionAnimation.RIGHT);
+                ActivityTransitionAnimation.slide(SettingsActivity.this, ActivityTransitionAnimation.Direction.RIGHT);
             }
         });
 

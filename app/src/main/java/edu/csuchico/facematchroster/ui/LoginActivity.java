@@ -6,33 +6,54 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.SignInButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import edu.csuchico.facematchroster.Config;
 import edu.csuchico.facematchroster.R;
 import edu.csuchico.facematchroster.model.Instructor;
+import edu.csuchico.facematchroster.ui.instructor.ClassesActivity;
+import edu.csuchico.facematchroster.ui.student.ListClasses;
+import edu.csuchico.facematchroster.ui.student.StudentLogin;
 import edu.csuchico.facematchroster.util.AccountUtils;
 import edu.csuchico.facematchroster.util.AmazonAwsUtils;
+import edu.csuchico.facematchroster.util.GoogleLogin;
 
 import static edu.csuchico.facematchroster.util.LogUtils.LOGD;
 import static edu.csuchico.facematchroster.util.LogUtils.makeLogTag;
 
-public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
+public class LoginActivity extends GoogleLogin implements AmazonAwsUtils.SaveToCognitoHelper.OnCognitoResult {
     private static final String TAG = makeLogTag(LoginActivity.class);
+
+    /**
+     * Passed as extra to intent's when login occur
+     */
+    public static final String FROM_LOGIN_ACTIVITY = "from_login_acitivity";
 
     @InjectView(R.id.dialog_layout)
     LinearLayout mDialogLayout;
+    @InjectView(R.id.sign_in_button)
+    SignInButton signInButton;
+
+    @OnClick(R.id.sign_in_button)
+    public void onSignInClick() {
+        connect();
+    }
 
     @Override
-    public void onAuthSuccess(String accountName, boolean newlyAuthenticated) {
-        super.onAuthSuccess(accountName, newlyAuthenticated);
+    public void onConnected(Bundle connectionHint) {
+        super.onConnected(connectionHint);
+        signInButton.setVisibility(View.GONE);
+        showDialogInstructorStudentLayout();
     }
 
     @OnClick(R.id.buttonInstructor)
     public void onLoginInstructor() {
         LOGD(TAG, "Login Instructor");
+
+        AccountUtils.setInstructorAccount(LoginActivity.this, true);
+
         hideDialogInstructorStudentLayout();
 
         final MaterialDialog materialDialog =
@@ -58,6 +79,8 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
         LOGD(TAG, "Login Student");
         hideDialogInstructorStudentLayout();
 
+        AccountUtils.setInstructorAccount(LoginActivity.this, false);
+
         // TODO: sometimes the login process return null
         String userName = AccountUtils.getPlusName(LoginActivity.this);
         if (userName == null) {
@@ -73,7 +96,9 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         dialog.dismiss();
-                        startActivity(new Intent(LoginActivity.this, StudentLogin.class));
+                        Intent intent = new Intent(LoginActivity.this, StudentLogin.class);
+                        intent.putExtra(FROM_LOGIN_ACTIVITY, true);
+                        startActivity(intent);
                         finish();
                     }
                 })
@@ -81,23 +106,30 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         /**
          * Only show the login activity once
          */
-        if (Config.IS_DOGFOOD_BUILD || !AccountUtils.hasToken(this, AccountUtils.getActiveAccountName(this))) {
+        if (!AccountUtils.hasActiveAccount(this)) {
             setContentView(R.layout.activity_login);
             ButterKnife.inject(this);
-        } else {
+        } else if (AccountUtils.isInstructor(LoginActivity.this)) { // instructor account
             startActivity(new Intent(this, ClassesActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(this, ListClasses.class));     // student account
             finish();
         }
     }
 
     private void hideDialogInstructorStudentLayout() {
         mDialogLayout.setVisibility(View.GONE);
+    }
+
+    private void showDialogInstructorStudentLayout() {
+        mDialogLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -129,7 +161,9 @@ public class LoginActivity extends BaseActivity implements AmazonAwsUtils.SaveTo
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             dialog.dismiss();
-                            startActivity(new Intent(LoginActivity.this, ClassesActivity.class));
+                            Intent intent = new Intent(LoginActivity.this, ClassesActivity.class);
+                            intent.putExtra(FROM_LOGIN_ACTIVITY, true);
+                            startActivity(intent);
                             finish();
 
                         }
