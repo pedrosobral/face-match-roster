@@ -257,14 +257,14 @@ public class BaseActivity extends AppCompatActivity {
 
                         break;
                     case NAVDRAWER_ITEM_HELP:
-                        intent = new Intent(getBaseContext(), HelpActivity.class);
-                        startActivity(intent);
-                        finish();
+//                        intent = new Intent(getBaseContext(), HelpActivity.class);
+//                        startActivity(intent);
+//                        finish();
                         break;
                     case NAVDRAWER_ITEM_FEEDBACK:
-                        intent = new Intent(getBaseContext(), FeedbackActivity.class);
-                        startActivity(intent);
-                        finish();
+//                        intent = new Intent(getBaseContext(), FeedbackActivity.class);
+//                        startActivity(intent);
+//                        finish();
                         break;
                 }
             }
