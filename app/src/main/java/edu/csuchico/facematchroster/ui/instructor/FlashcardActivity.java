@@ -76,7 +76,8 @@ public class FlashcardActivity extends BaseActivity {
         mFlashcardLayoutEase4.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.flashcard_layout_ease4)
+    @OnClick({R.id.flashcard_layout_ease1, R.id.flashcard_layout_ease2,
+              R.id.flashcard_layout_ease3, R.id.flashcard_layout_ease4})
     public void onAnswerClicked() {
 
         mFlashcardName.setVisibility(View.GONE);
