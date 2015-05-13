@@ -1,5 +1,6 @@
 package edu.csuchico.facematchroster.ui.student;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -254,6 +255,7 @@ public class ListClasses extends BaseActivity implements AmazonAwsUtils.SaveToCo
             if (classesEnrolled != null && classesEnrolled.contains(class_id)) {
                 LOGD(TAG, "2 onBindView: " + class_id);
                 holder.enrollButton.setText("Enrolled");
+                holder.enrollButton.setTextColor(Color.GREEN);
                 classesEnrolled.remove(class_id);
             }
 
